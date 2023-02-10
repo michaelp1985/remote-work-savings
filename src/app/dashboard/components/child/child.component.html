@@ -1,0 +1,60 @@
+<mat-card>
+  <mat-card-header>
+    <h2>Child Care</h2>
+  </mat-card-header>
+
+  <form [formGroup]="form">
+    <mat-card-content>
+      <div>      
+        <p>Have you saved on child care by working remote?</p>
+        <p>Example: Your child/children were attending daycare prior to you working from home and now they stay at home with you.</p>
+        <mat-action-row appearance="outline">        
+            <button mat-button color="primary" (click)="hasSavedOnChildCare(true)" class="navigation-right">
+              Yes <mat-icon>thumb_up</mat-icon> 
+            </button> 
+            <button mat-button color="primary" (click)="hasSavedOnChildCare(false)" class="navigation-right">
+              No <mat-icon>thumb_down</mat-icon> 
+            </button>        
+        </mat-action-row>
+      </div>
+      <div *ngIf="hasChildCareSavings === true">      
+        <p>Estimated child care cost saved per week:</p>
+        <mat-form-field appearance="outline">
+          <mat-hint>Enter amount in USD (dollars)</mat-hint>                
+          <input matInput type="currency" [(ngModel)]="childCareCost" formControlName="careCost" appCurrencyInput>
+          <mat-error *ngIf="form.get('careCost')?.invalid && form.get('careCost')?.touched">
+            {{ form.controls['careCost'].errors?.['inValidNumber'].message }}
+          </mat-error>
+        </mat-form-field>    
+
+        <p>Did you account for any additional commute cost (time/mileage) that you may have saved?</p>
+        <p>Example: You previously had to drive an extra 10 miles per day when dropping/picking up your kid(s) from daycare.</p> 
+
+        <mat-action-row appearance="outline">        
+          <button mat-button color="primary" (click)="needToAddCostSavings(true)" class="navigation-right">
+            Yes <mat-icon>thumb_up</mat-icon> 
+          </button> 
+          <button mat-button color="primary" (click)="needToAddCostSavings(false)" class="navigation-right">
+            No <mat-icon>thumb_down</mat-icon> 
+          </button>        
+        </mat-action-row>
+
+        <div *ngIf="hasSavedAdditionalCost === true">
+          <p>Estimated time taken to pick up/drop off kid(s) each day</p>
+          <mat-form-field appearance="outline">
+            <mat-hint>Enter amount in minutes</mat-hint>                
+            <input matInput type="number" [(ngModel)]="childCareCommuteMinutes" formControlName="commuteMinutes">
+          </mat-form-field> 
+
+          <p>Estimated miles required to pick up/drop off kid(s) each day</p>
+          <mat-form-field appearance="outline">
+            <mat-hint>Enter amount in miles</mat-hint>                
+            <input matInput type="number" [(ngModel)]="childCareCommuteMiles" formControlName="commuteMiles">
+          </mat-form-field>
+        </div>         
+      </div> 
+    </mat-card-content>
+  </form>
+</mat-card>
+
+<app-navigation [shownext]="form.valid"></app-navigation>

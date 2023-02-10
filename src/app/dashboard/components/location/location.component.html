@@ -1,0 +1,38 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Location
+    </mat-card-title>
+    <mat-card-subtitle>
+      Please provide the following location information
+    </mat-card-subtitle>
+  </mat-card-header>  
+
+  <form [formGroup]="form">
+    <mat-card-content>
+      <mat-form-field appearance="outline">
+        <mat-label>State</mat-label>
+        <mat-select [(value)]="selectedState" (selectionChange)="onStateChange($event.value)" formControlName="state">
+          <mat-select-trigger>{{selectedState.name}}</mat-select-trigger>
+          <mat-option *ngFor="let state of states" [value]="state">
+            {{state.name}}
+          </mat-option>        
+        </mat-select>             
+      </mat-form-field>  
+      
+      <div *ngIf="cities.length > 1">      
+        <mat-form-field appearance="outline">
+          <mat-label>City</mat-label>
+          <mat-select [(value)]="selectedCity" (selectionChange)="onCityChange($event.value)" required>
+            <mat-select-trigger>{{selectedCity.name}}</mat-select-trigger>
+            <mat-option *ngFor="let city of cities" [value]="city">
+              {{city.name}}
+            </mat-option>
+          </mat-select>        
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </form>
+</mat-card>
+
+<app-navigation [shownext]="formComplete"></app-navigation>

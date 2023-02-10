@@ -1,0 +1,5 @@
+components
+- dashboard
+- food and beverage calculator
+- commute calculator
+- time savings calculator

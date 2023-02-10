@@ -1,0 +1,57 @@
+ <mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Work History
+    </mat-card-title>
+    <mat-card-subtitle>
+      Enter details about your remote work history.
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <form [formGroup]="form">
+    <mat-card-content>    
+      <mat-form-field appearance="outline">
+        <mat-label>Start Date of Remote Work</mat-label>
+        <input matInput [matDatepicker]="startPicker" (ngModel)="startDate" formControlName="startDate">
+        <mat-hint>Month/Day/Year</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+        <mat-error *ngIf="form.get('startDate')?.invalid && form.get('startDate')?.touched">
+          Invalid Date: Date must be on/after 1/1/2010
+        </mat-error>
+        <mat-error *ngIf="form.get('startDate')?.hasError('required') && form.get('startDate')?.touched">
+          Date Required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>End Date of Remote Work</mat-label>
+        <input matInput [matDatepicker]="endPicker" (ngModel)="endDate" formControlName="endDate">
+        <mat-hint>If currently remote, leave as today's date</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+        <mat-error *ngIf="form.get('endDate')?.invalid && form.get('endDate')?.touched">
+          Invalid Date: Date cannot be after today's date.
+        </mat-error>      
+        <mat-error *ngIf="form.get('endDate')?.hasError('required') && form.get('endDate')?.touched">
+          Date Required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Remote Days Per Week</mat-label>
+        <mat-select [(ngModel)]="remoteDays" formControlName="remoteWorkDays">
+          <mat-select-trigger>{{remoteDays}}</mat-select-trigger>
+          <mat-option *ngFor="let number of [5,4,3,2,1,0]" [value]="number">
+            {{number}}
+          </mat-option>
+        </mat-select>  
+        <mat-error *ngIf="form.get('remoteWorkDays')?.invalid && form.get('remoteWorkDays')?.touched">
+          Value must be greater than 0
+        </mat-error>      
+      </mat-form-field>    
+    </mat-card-content>
+  </form>
+</mat-card>
+
+<app-navigation [shownext]="form.valid"></app-navigation>

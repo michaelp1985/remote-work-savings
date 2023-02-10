@@ -1,0 +1,18 @@
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-toolbar',
+  templateUrl: './toolbar.component.html',
+  styleUrls: ['./toolbar.component.css']
+})
+export class ToolbarComponent implements OnInit {
+
+  @Output() toggleSidenav = new EventEmitter<void>();
+  progressBar = document.querySelector('progress');
+
+  constructor() { }
+
+  ngOnInit(): void {    
+    console.log(this.progressBar?.textContent)
+  }
+}

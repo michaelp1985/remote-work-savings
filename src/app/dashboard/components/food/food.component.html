@@ -1,0 +1,23 @@
+<mat-card>
+  <mat-card-header>
+    <h2>Food & Beverage</h2>
+  </mat-card-header>
+  <mat-card-content>
+    <div>      
+      <p>Estimated food cost per week :</p>
+      <mat-form-field appearance="outline">
+        <mat-hint>Enter amount in USD (dollars)</mat-hint>                
+        <input matInput type="currency" [(ngModel)]="foodCostPerWeek">
+      </mat-form-field>    
+    </div>
+    <div>      
+      <p>Estimated beverage cost per week :</p>
+      <mat-form-field appearance="outline">
+        <mat-hint>Enter amount in USD (dollars)</mat-hint>                
+        <input matInput type="currency" [(ngModel)]="beverageCostPerWeek">
+      </mat-form-field>    
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<app-navigation [shownext]="true"></app-navigation>

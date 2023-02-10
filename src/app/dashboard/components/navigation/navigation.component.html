@@ -1,0 +1,8 @@
+<div class="navigation">    
+    <button mat-raised-button color="primary" (click)="previous()" class="navigation-left" [disabled]="currentPage === 0">
+      <mat-icon>chevron_left</mat-icon>Previous
+    </button>  
+    <button mat-raised-button color="primary" (click)="next()" class="navigation-right" [disabled]="currentPage !== lastPage && !shownext">
+      Next<mat-icon>chevron_right</mat-icon> 
+    </button>   
+</div>

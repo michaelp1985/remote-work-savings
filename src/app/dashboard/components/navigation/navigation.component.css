@@ -1,0 +1,16 @@
+.navigation {
+  display: flex;
+  justify-content: space-between;  
+  margin: 10px;  
+  max-width: 320px;
+}
+
+.navigation-right {
+  justify-content: flex-end;  
+  min-width: 125px;
+}
+
+.navigation-left {
+  justify-content: flex-start;  
+  min-width: 125px;
+}
