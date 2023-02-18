@@ -1,0 +1,51 @@
+$color_1: white;
+$background-color_1: white;
+$background-color_2: blue;
+
+:root {
+	--iconwidth: 56px;
+}
+.sidenav-toggle {
+	display: none;
+	padding: 0;
+	margin: 8px;
+	min-width: var(--iconWidth);
+	font-size: 30px;
+	height: var(--iconWidth);
+	width: var(--iconWidth);
+	line-height: var(--iconWidth);
+	color: $color_1;
+}
+mat-icon {
+	font-size: 30px;
+	height: var(--iconWidth);
+	width: var(--iconWidth);
+	line-height: var(--iconWidth);
+	color: $color_1;
+}
+.example-spacer {
+	flex: 1 1 auto;
+}
+progress {
+	width: 100%;
+	margin-left: 10px;
+	margin-right: 10px;
+	border-radius: 10px;
+	border-width: 0;
+	&::-webkit-progress-bar {
+		background-color: $background-color_1;
+	}
+	&::-webkit-progress-value {
+		background-color: $background-color_2;
+	}
+}
+@media (max-width: 720px) {
+	.sidenav-toggle {
+		display: flex;
+		padding: 0;
+		margin: 8px;
+		min-width: var(--iconWidth);
+		align-items: center;
+		justify-content: center;
+	}
+}

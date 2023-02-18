@@ -4,7 +4,7 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-misc',
   templateUrl: './misc.component.html',
-  styleUrls: ['./misc.component.css']
+  styleUrls: ['./misc.component.scss']
 })
 export class MiscComponent implements OnInit {
 

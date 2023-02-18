@@ -10,7 +10,7 @@ import { CustomValidatorsModule } from 'src/app/shared/validators/custom-validat
 @Component({
   selector: 'app-transportation',
   templateUrl: './transportation.component.html',
-  styleUrls: ['./transportation.component.css']
+  styleUrls: ['./transportation.component.scss']
 })
 export class TransportationComponent implements OnInit {  
   readonly TransportationType = TransportationType;
@@ -121,12 +121,12 @@ export class TransportationComponent implements OnInit {
     this.userService.user.commute.fuelType = this.selectedFuel;
     this.userService.user.commute.transportationType = this.selectedTransportation;
     this.userService.user.commute.commuteDistancePerDay = this.milesToWork;
-    this.userService.user.commute.commuteMinutesPerDay = parseInt(this.minutesToWork);        
+    this.userService.user.commute.commuteMinutesPerDay = parseInt(this.minutesToWork) * 2;        
     this.userService.user.commute.publicTransportationCostPerDay = parseFloat(this.publicTransportationCost.replace('$', ''));
 
     //TODO: populate commuteData and don't allow access to userService commuteData directly.
     // need to add commute data from user minutes to work plus child care mins to work.
-    this.userService.commuteData.commuteMinutesPerDay = parseInt(this.minutesToWork);          
+    this.userService.commuteData.commuteMinutesPerDay = parseInt(this.minutesToWork) * 2;          
     this.userService.populateFuelData();
   }
 }

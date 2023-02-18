@@ -12,4 +12,5 @@ export class User {
   misc: Misc = new Misc();
   state: State = new State();
   city?: City;
+  totalDaysWorkedRemote: number = 0;
 }

@@ -6,7 +6,7 @@ import { NgMaterialModule } from '../shared/ng-material-module.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { CommuteComponent } from './components/commute/commute.component';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { BarVerticalComponent, NgxChartsModule } from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReportsComponent } from './components/reports/reports.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
@@ -72,7 +72,7 @@ const routes: Routes = [
   ],  
   providers: [
     FuelCostService,
-    ReportService
+    ReportService,    
   ]
 })
 export class DashboardModule { }

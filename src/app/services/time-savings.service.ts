@@ -1,5 +1,5 @@
-import { Time } from '@angular/common';
 import { Injectable } from '@angular/core';
+import { ChildCare } from '../models/child-care';
 import { Commute } from '../models/commute.model';
 import { RemoteWorkhistory } from '../models/remote-workhistory.model';
 import { TimeData } from '../models/time.model';
@@ -13,8 +13,36 @@ export class TimeSavingsService {
 
   constructor() { }
 
+  calculateTimeSavingsToday(commuteDate: Commute, remoteWorkHistory: RemoteWorkhistory, childCare: ChildCare): TimeData {    
+    
+    const totalRemoteWorkingDays = this.getTotalRemoteWorkingDays(remoteWorkHistory);  
+    
+    // caculate time saved per day
+    let timeSavedInMinutes = (totalRemoteWorkingDays * commuteDate.commuteMinutesPerDay);
+    let minutesSaved = timeSavedInMinutes % 60;
+    let hoursSaved = Math.floor(timeSavedInMinutes / 60);
+    let daysSaved = Math.floor(hoursSaved / 24);
+    let weeksSaved = Math.floor(daysSaved / 5);
+    
+    let timeSaved: TimeData = {
+      totalMinutesMinusHoursSaved: minutesSaved,
+      totalMinutesSaved: timeSavedInMinutes,
+      totalHoursSaved: hoursSaved,
+      totalDaysSaved: daysSaved,
+      totalWeeksSaved: weeksSaved
+    }
 
-  calculateTimeSavingsToday(commuteDate: Commute, remoteWorkHistory: RemoteWorkhistory): TimeData {    
+    return timeSaved;
+  }
+
+  getTotalRemoteWorkingDays(remoteWorkHistory: RemoteWorkhistory){
+
+    const totalPossibleWorkingDays = this.getTotalPossibleWorkingDays(remoteWorkHistory);
+    const totalWeeks = Math.floor(totalPossibleWorkingDays / 5);
+    return remoteWorkHistory.remoteWorkDays * totalWeeks;
+  }
+
+  getTotalPossibleWorkingDays(remoteWorkHistory: RemoteWorkhistory){
 
     let currentDate = new Date();
     let startYear = remoteWorkHistory.startDate.getFullYear();
@@ -40,26 +68,9 @@ export class TimeSavingsService {
     totalDays -= weekendDays;
 
     //account for hollidays 
-    totalDays -= this.holidaysTotal * ( currentYear - startYear);    
-
+    totalDays -= this.holidaysTotal * ( currentYear - startYear); 
     
-    // caculate time saved per day
-    let timeSavedInMinutes = (totalDays * commuteDate.commuteMinutesPerDay);
-    let minutesSaved = timeSavedInMinutes % 60;
-    let hoursSaved = Math.floor(timeSavedInMinutes / 60);
-    let daysSaved = Math.floor(hoursSaved / 24);
-    let weeksSaved = Math.floor(daysSaved / remoteWorkHistory.remoteWorkDays);
-    
-
-    let timeSaved: TimeData = {
-      totalMinutesMinusHoursSaved: minutesSaved,
-      totalMinutesSaved: timeSavedInMinutes,
-      totalHoursSaved: hoursSaved,
-      totalDaysSaved: daysSaved,
-      totalWeeksSaved: weeksSaved
-    }
-
-    return timeSaved;
+    return totalDays;
   }
 
   getDayOfYear(date: Date): number {    

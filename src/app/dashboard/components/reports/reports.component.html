@@ -4,40 +4,48 @@
         Savings Report
       </mat-card-title>
     </mat-card-header>
-    <mat-card-content>
-      <p>
+    <mat-card-content class="report-summary-container">
+        <div class="report-summary-item">
         Total Money Saved: ${{userSavingsReport.totalMoneySavings}} 
         <em style="font-size: 10px;">(USD)</em>
-      </p>
-      <p>
-        Total Time Saved: {{userSavingsReport.totalTimeSavings}} 
-        <em style="font-size: 10px;">(Minutes)</em>
-      </p>
+        </div>        
+        <div class="report-summary-item">
+          Total Time Saved: {{userSavingsReport.totalTimeSavings}} 
+          <em style="font-size: 10px;">(Minutes)</em>
+        </div>
     </mat-card-content>
 </mat-card>  
 
 <mat-card name="Reports" id="userReports">
-  <mat-card-header>
-    <mat-card-title>
-      Savings Breakdown
-    </mat-card-title>
-  </mat-card-header>
   <mat-card-content>
-    <div class="chart-container">
-      <ngx-charts-pie-chart
+    <div class="chart-container chart-item-dark">
+      <ngx-charts-pie-chart [ngClass]="darkMode === true ? 'pie-label-style' : 'pie-label chart-item-light'"         
         [view]="view"                        
-        [results]="costReport"
-        [ngClass]="darkMode === true ? 'pie-label-style' : 'pie-label'"
-        [labels]="true"
-        [labelFormatting]="labelFormatFunction"
-      ></ngx-charts-pie-chart>      
-      <ngx-charts-pie-chart
+        [results]="costReport.data"        
+        [labels]="true"         
+      ></ngx-charts-pie-chart> 
+      <div class="chart-title-dark">{{ costReport.title }}</div>    
+    </div>
+    <div class="chart-container chart-item-dark">
+      <ngx-charts-pie-chart [ngClass]="darkMode === true ? 'pie-label-style' : 'pie-label chart-item-light'"        
         [view]="view"
         [customColors]="colorScheme"
-        [results]="timeReport"
-        [labels]="true"
-        [labelFormatting]="labelFormatFunction"
+        [results]="timeReport.data"        
+        [labels]="true"        
       ></ngx-charts-pie-chart>      
+      <div class="chart-title-dark">{{ timeReport.title }}</div>   
+    </div>
+    <div class="chart-container chart-item-dark">      
+      <ngx-charts-bar-vertical
+        [view]="barView"  
+        [customColors]="colorScheme"      
+        [results]="timeBreakdownReport.data"        
+        [xAxis]="true"
+        [yAxis]="true"                
+        [showYAxisLabel]="true"        
+        [yAxisLabel]="yAxisLabel">
+      </ngx-charts-bar-vertical>
+      <div class="chart-title-dark">{{ timeBreakdownReport.title }}</div> 
     </div>
   </mat-card-content>
 </mat-card>

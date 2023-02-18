@@ -1,7 +1,7 @@
 export enum CostSavingsType {
   Fuel = 'Fuel',
-  Auto = "Auto",
+  Auto = 'Auto',
   ChildCare = 'Child Care',
-  FoodBeverage = 'Food & Beverage',
-  Misc = 'Miscellaneous'
+  FoodBeverage = 'Food/Bev',
+  Misc = 'Misc'
 }

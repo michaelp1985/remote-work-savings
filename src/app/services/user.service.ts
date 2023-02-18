@@ -50,8 +50,9 @@ export class UserService {
   }
 
   calculateTimeSaved(){
-    this.timeData = this.timeService.calculateTimeSavingsToday(this.commuteData, this.user.remoteWorkHistory);
+    this.timeData = this.timeService.calculateTimeSavingsToday(this.commuteData, this.user.remoteWorkHistory, this.user.childCare);
     this.userSavingsReport.totalTimeSavings = this.timeData.totalMinutesSaved > 0 ? Math.round(this.timeData.totalMinutesSaved * 100) / 100 : 0;
+    this.user.totalDaysWorkedRemote = this.timeService.getTotalRemoteWorkingDays(this.user.remoteWorkHistory);
   }
 
   calculateTotalMoneySaved(){
@@ -62,6 +63,16 @@ export class UserService {
       this.userSavingsReport.totalMiscSavings);
 
     this.userSavingsReport.totalMoneySavings = totalSaved > 0 ? Math.round(totalSaved * 100) / 100 : 0;
+  }
+
+  getTotalMoneySaved(){
+    let totalSaved = (
+      this.userSavingsReport.totalChildCareSavings + 
+      this.userSavingsReport.totalFuelSavings + 
+      this.userSavingsReport.totalFoodBeverageSavings + 
+      this.userSavingsReport.totalMiscSavings);
+      
+    return totalSaved > 0 ? Math.round(totalSaved * 100) / 100 : 0;
   }
 
   calculateFuelCost(){

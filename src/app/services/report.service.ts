@@ -12,7 +12,7 @@ export class ReportService {
 
   constructor(private readonly userService: UserService) { }
 
-  getUserSavingsReports(){
+  getUserCostSavingsReports(){
     let costSavingsReport: CostSavingsReport[] = [
       {
         name: CostSavingsType.Fuel,
@@ -39,18 +39,53 @@ export class ReportService {
     let timeSavingsReport: TimeSavingsReport[] = [
       {
         name: TimeSavingsType.Commute,
-        value: 100
+        value: this.userService.timeData.totalMinutesSaved
       },
       {
         name: TimeSavingsType.ChildCare,
-        value: 50
+        value: this.userService.user.totalDaysWorkedRemote * this.userService.user.childCare.commuteInMinutesPerDay
       },
       {
         name: TimeSavingsType.MorningRoutine,
-        value: 25
+        value: this.userService.user.totalDaysWorkedRemote * this.userService.user.misc.morningRoutineInMinutes
       }
     ];
 
     return timeSavingsReport;
+  }
+
+  getUserTimeSavingsBreakdownReport(){
+    
+    const totalRemoteWorkingDays = this.userService.user.totalDaysWorkedRemote;
+    let minsPerDay = Math.round(this.userService.timeData.totalMinutesSaved / totalRemoteWorkingDays);
+    minsPerDay += this.userService.user.misc.morningRoutineInMinutes
+    let weeksInMonth = 4.33;
+    let weeksInYear = 52;
+
+    let timeSavingsBreakdown: any[] = [
+      {
+        name: "Day",
+        value: Math.round(minsPerDay)
+      },
+      {
+        name: "Week",
+        value: Math.round(minsPerDay * this.userService.user.remoteWorkHistory.remoteWorkDays)
+      },
+      {
+        name: "Month",
+        value: Math.round(minsPerDay * (this.userService.user.remoteWorkHistory.remoteWorkDays * weeksInMonth))
+      },
+      {
+        name: "Year",
+        value: Math.round(minsPerDay * (this.userService.user.remoteWorkHistory.remoteWorkDays * weeksInYear))
+      }                  
+    ];
+
+    return timeSavingsBreakdown;
+  }
+
+  getUserCostSavingsBreakdownReport(){
+    
+    let costSavedPerDay = this.userService.calculateTotalMoneySaved();
   }
 }

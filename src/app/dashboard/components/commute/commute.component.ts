@@ -7,7 +7,7 @@ import { FuelCostService } from 'src/app/services/fuel-cost.service';
 @Component({
   selector: 'app-commute',
   templateUrl: './commute.component.html',
-  styleUrls: ['./commute.component.css']
+  styleUrls: ['./commute.component.scss']
 })
 export class CommuteComponent implements OnInit, AfterViewInit {
 

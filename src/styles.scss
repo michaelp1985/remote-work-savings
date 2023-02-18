@@ -1,0 +1,11 @@
+$font-family_1: Roboto, "Helvetica Neue", sans-serif;
+
+/* You can add global styles to this file, and also import other style files */
+html {
+	height: 100%;
+}
+body {
+	height: 100%;
+	margin: 0;
+	font-family: $font-family_1;
+}

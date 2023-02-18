@@ -6,7 +6,7 @@ import { CustomValidatorsModule } from 'src/app/shared/validators/custom-validat
 @Component({
   selector: 'app-work-history',
   templateUrl: './work-history.component.html',
-  styleUrls: ['./work-history.component.css']
+  styleUrls: ['./work-history.component.scss']
 })
 export class WorkHistoryComponent implements OnInit {
 
