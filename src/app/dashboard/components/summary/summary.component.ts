@@ -5,7 +5,7 @@ import { UserService } from 'src/app/services/user.service';
 export interface SummaryData {
   type: string;
   name: string;
-  value: any;
+  value: any;  
 }
 
 @Component({
@@ -21,31 +21,9 @@ export class SummaryComponent implements OnInit {
 
   constructor(private readonly userService: UserService) {     
     this.user = this.userService.user;
-
-    // this.user = {
-    //   dateRemoteWorkBegin: new Date(2020, 0, 1),
-    //   dateRemoteWorkEnded: new Date(),
-    //   remoteWorkDaysPerWeek: 5,
-    //   commuteDistancePerDay: 10,
-    //   commuteMinutesPerDay: 30,
-    //   transportationType: TransportationType.personalMoto,
-    //   autoType: AutoType.Car,
-    //   fuelType: "Regular Gasoline",
-    //   publicTransportationCostPerDay: 0,
-    //   childCareCommuteInMilesPerDay: 0,
-    //   childCareCommuteInMinutesPerDay: 0,
-    //   childCareCostPerWeek: 0,
-    //   clothingCostPerYear: 0,
-    //   city: new City(),
-    //   beverageCostPerWeek: 0,
-    //   foodCostPerWeek: 0,
-    //   morningRoutineInMinutes: 0,
-    //   state: { abbreviation: "MO", area: "", name: "" }
-    // }
   }
 
-  ngOnInit(): void {    
-    console.log(this.user);
+  ngOnInit(): void {        
     this.populateSummaryData();
   }
 
@@ -66,7 +44,7 @@ export class SummaryComponent implements OnInit {
     this.summaryData.push({
       type: 'Work History',
       name: 'Remote Days / Week',
-      value: this.user.remoteWorkHistory.remoteWorkDays,
+      value: this.user.remoteWorkHistory.remoteWorkDaysPerWeek,
     });
 
     this.summaryData.push({
@@ -108,7 +86,7 @@ export class SummaryComponent implements OnInit {
     this.summaryData.push({
       type: 'Misc',
       name: 'Clothing Cost / Year',
-      value: this.user.commute.publicTransportationCostPerDay,
+      value: this.user.misc.clothingCostPerYear,
     });
 
     this.summaryData.push({
@@ -146,5 +124,7 @@ export class SummaryComponent implements OnInit {
       name: 'Child Care Commute Mins / Day',
       value: this.user.childCare.commuteInMinutesPerDay,
     });
+
+    this.summaryData = this.summaryData.filter(x => x.value);
   }
 }

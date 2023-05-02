@@ -1,33 +1,37 @@
-import { AfterViewInit, Component } from '@angular/core';
-import { UserSavingsReport } from 'src/app/models/reports/user-savings-report';
+import { AfterContentChecked, Component } from '@angular/core';
+import { UserCostSavingsReport } from 'src/app/models/reports/user-cost-savings-report';
+import { UserTimeSavingsReport } from 'src/app/models/reports/user-time-savings-report';
 import { ReportService } from 'src/app/services/report.service';
-import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
-  styleUrls: ['./reports.component.scss']
+  styleUrls: ['./reports.component.scss'],
 })
-export class ReportsComponent implements AfterViewInit { 
+export class ReportsComponent implements AfterContentChecked {
   chartTitle = 'test';
   darkMode = false;
-  userSavingsReport: UserSavingsReport;
+  userCostSavingsReport: UserCostSavingsReport;
+  userTimeSavingsReport: UserTimeSavingsReport;
   costReport: any = {
-    title: "Cost Savings",
-    data: []
-  }
+    title: 'Cost Savings',
+    data: [],
+  };
   timeReport: any = {
-    title: "Time Savings",
-    data: []
-  }
+    title: 'Time Savings',
+    data: [],
+  };
   timeBreakdownReport: any = {
-    title: "Time Breakdown",
-    data: []
-  }
+    title: 'Time Breakdown',
+    data: [],
+  };
+  costBreakdownReport: any = {
+    title: 'Cost Breakdown',
+    data: [],
+  };
 
-  // TODO: Add following info
-  // cost saved per year / month / day / week (chart here)
-  // time saved per year / month / day / week (char here)
+  displayedColumns: string[] = ['name', 'value'];
+
   showXAxis = true;
   showYAxis = true;
   gradient = false;
@@ -36,30 +40,30 @@ export class ReportsComponent implements AfterViewInit {
   xAxisLabel = 'Country';
   showYAxisLabel = true;
   yAxisLabel = 'Population';
+  screenWidth: number = 0;
+  private readonly chartHeight = 300;
 
-
-  // chart options
-  view: [number, number] = [350, 300];
-  barView: [number, number] = [300, 300]
-  colorScheme = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+  view: [number, number] = [300, 300];
+  pieChartColorScheme = {
+    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
   };
-  
-  constructor(private readonly userService: UserService,
-    private readonly reportService: ReportService) {     
-    this.userService.calculateFuelCost();
-    this.userService.calculateTimeSaved();
-    this.userService.calculateFoodBeverageCost();
-    this.userService.calculateTotalMoneySaved();    
 
-    this.userSavingsReport = userService.userSavingsReport;
-    this.costReport.data = this.reportService.getUserCostSavingsReports();    
+  constructor(private readonly reportService: ReportService) {
+
+    this.userCostSavingsReport = this.reportService.getUserCostSavingsReport();
+    this.userTimeSavingsReport = this.reportService.getUserTimeSavingsReport();
+    this.costReport.data = this.reportService.getUserCostSavingsReports();
     this.timeReport.data = this.reportService.getUserTimeSavingsReports();
-    this.timeBreakdownReport.data = this.reportService.getUserTimeSavingsBreakdownReport();   
-    console.log(JSON.stringify(this.timeBreakdownReport.data));     
+    this.timeBreakdownReport.data =
+      this.reportService.getUserTimeSavingsBreakdownReport();
+
+    this.costBreakdownReport.data =
+      this.reportService.getUserCostSavingsBreakdownReport();
+
+    this.screenWidth = Math.min(window.innerWidth * 0.9, 350);    
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentChecked(): void {
     this.darkMode = !this.isLight();
   }
 
@@ -68,13 +72,12 @@ export class ReportsComponent implements AfterViewInit {
   }
 
   isLight() {
-    const body = document?.querySelector("body") ?? new HTMLBodyElement();
+    const body = document?.querySelector('body') ?? new HTMLBodyElement();
     const s = window.getComputedStyle(body);
-    const color = s.getPropertyValue("background-color");
+    const color = s.getPropertyValue('background-color');
 
-    const [r, g, b] = color.match(/\d+/g)?.map(Number) ?? [0,0,0];
+    const [r, g, b] = color.match(/\d+/g)?.map(Number) ?? [0, 0, 0];
     const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
     return luminance >= 128;
   }
-
 }

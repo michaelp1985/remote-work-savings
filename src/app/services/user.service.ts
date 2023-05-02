@@ -1,104 +1,133 @@
 import { Injectable } from '@angular/core';
-import { Commute } from '../models/commute.model';
 import { TimeData } from '../models/time.model';
-import { UserSavingsReport } from '../models/reports/user-savings-report';
 import { User } from '../models/user.model';
 import { AutoService } from './auto.service';
 import { FuelCostService } from './fuel-cost.service';
 import { TimeSavingsService } from './time-savings.service';
+import { AutoType } from '../models/enumerations/auto-type';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
   timeData: TimeData;
-  userSavingsReport: UserSavingsReport;
-  commuteData: Commute;  
   user: User;
 
-  constructor(private readonly fuelService: FuelCostService,
+  constructor(
+    private readonly fuelService: FuelCostService,
     private readonly timeService: TimeSavingsService,
-    private readonly autoService: AutoService) { 
+    private readonly autoService: AutoService
+  ) {
     this.user = new User();
-    this.commuteData = new Commute();    
     this.timeData = new TimeData();
-
-    this.userSavingsReport = {
-      totalChildCareSavings: 0,
-      totalFoodBeverageSavings: 0,
-      totalFuelSavings: 0,
-      totalMiscSavings: 0,
-      totalTimeSavings: 0,
-      totalMoneySavings: 0
-    };
   }
 
-  calculateFoodBeverageCost(){
-    this.userSavingsReport.totalFoodBeverageSavings = 
-      (this.user.misc.beverageCostPerWeek + this.user.misc.foodCostPerWeek) * this.timeData.totalWeeksSaved;
-  }
+  populateFuelData() {
+    let area = this.user.city?.area ?? this.user.state?.area ?? '';
+    this.fuelService.loadFuelData(
+      area,
+      this.user.remoteWorkHistory.startDate,
+      this.user.remoteWorkHistory.endDate
+    );
 
-  populateFuelData(){
-    let area = this.user.city?.area ?? this.user.state?.area ?? "";    
-    this.fuelService.loadFuelData(area, this.user.remoteWorkHistory.startDate, this.user.remoteWorkHistory.endDate);
-
-    this.fuelService.fuelData.subscribe(data => {      
-      if (data.length == 0) return;            
-      this.calculateFuelCost();
+    this.fuelService.fuelData.subscribe((data) => {
+      if (data.length == 0) return;
+      console.log('Fuel Data Loaded');
     });
   }
 
-  calculateTimeSaved(){
-    this.timeData = this.timeService.calculateTimeSavingsToday(this.commuteData, this.user.remoteWorkHistory, this.user.childCare);
-    this.userSavingsReport.totalTimeSavings = this.timeData.totalMinutesSaved > 0 ? Math.round(this.timeData.totalMinutesSaved * 100) / 100 : 0;
-    this.user.totalDaysWorkedRemote = this.timeService.getTotalRemoteWorkingDays(this.user.remoteWorkHistory);
+  getTotalFoodBeverageCost() {
+    const foodBeverageCost =
+      (this.user.misc.beverageCostPerWeek + this.user.misc.foodCostPerWeek) *
+      this.timeData.totalWeeksSaved;
+
+    return this.formatCurrency(foodBeverageCost);
   }
 
-  calculateTotalMoneySaved(){
-    let totalSaved = (
-      this.userSavingsReport.totalChildCareSavings + 
-      this.userSavingsReport.totalFuelSavings + 
-      this.userSavingsReport.totalFoodBeverageSavings + 
-      this.userSavingsReport.totalMiscSavings);
+  getTotalChildCareSavings() {
+    const childCareSavings =
+      this.user.childCare.costPerWeek * this.timeData.totalWeeksSaved;
 
-    this.userSavingsReport.totalMoneySavings = totalSaved > 0 ? Math.round(totalSaved * 100) / 100 : 0;
+    return this.formatCurrency(childCareSavings);
   }
 
-  getTotalMoneySaved(){
-    let totalSaved = (
-      this.userSavingsReport.totalChildCareSavings + 
-      this.userSavingsReport.totalFuelSavings + 
-      this.userSavingsReport.totalFoodBeverageSavings + 
-      this.userSavingsReport.totalMiscSavings);
-      
-    return totalSaved > 0 ? Math.round(totalSaved * 100) / 100 : 0;
+  getTotalMiscSavings() {
+    const miscSavings =
+      this.user.misc.clothingCostPerYear * (this.timeData.totalWeeksSaved / 52);
+
+    return this.formatCurrency(miscSavings);
   }
 
-  calculateFuelCost(){
-    let fuelData = this.fuelService.getFuelDataByFuelType(this.user.commute.fuelType ?? "");
+  getTotalDaysWorkedRemote() {
+    return this.timeService.getTotalRemoteWorkingDays(
+      this.user.remoteWorkHistory
+    );
+  }
+
+  getTotalTimeSavedInMinutes() {
+    return this.timeService.calculateTotalTimeSavingsToday(
+      this.user.commute,
+      this.user.remoteWorkHistory,
+      this.user.childCare,
+      this.user.misc
+    ).totalMinutesSaved;
+  }
+
+  populateTimeData() {
+    this.timeData = this.timeService.calculateTotalTimeSavingsToday(
+      this.user.commute,
+      this.user.remoteWorkHistory,
+      this.user.childCare,
+      this.user.misc
+    );
+  }
+
+  getTotalMorningRoutineTimeSaved(): number {
+    return this.timeService.calculateTotalTimeSavedByMinutes(this.user.misc.morningRoutineInMinutes, this.user.remoteWorkHistory).totalMinutesSaved;
+  }
+  getTotalCommuteTimeSaved(): number {
+    return this.timeService.calculateTotalTimeSavedByMinutes(this.user.commute.commuteMinutesPerDay, this.user.remoteWorkHistory).totalMinutesSaved;
+  }
+  getTotalChildCareTimeSaved(): number {
+    return this.timeService.calculateTotalTimeSavedByMinutes(this.user.childCare.commuteInMinutesPerDay, this.user.remoteWorkHistory).totalMinutesSaved;
+  }
+
+  getTotalFuelSavings() {
+    let fuelData = this.fuelService.getFuelDataByFuelType(
+      this.user.commute.fuelType ?? ''
+    );
     let totalFuelCost = 0;
-    this.userSavingsReport.totalFuelSavings = 0;
 
-    for (let data of fuelData){
+    for (let data of fuelData) {
       let month = Number(data.period.split('-')[1]);
       let year = Number(data.period.split('-')[0]);
 
-      let workingDaysInMonth = this.timeService.getWorkingDaysOfMonthByYear(month, year)
+      let workingDaysInMonth = this.timeService.getWorkingDaysOfMonthByYear(
+        month,
+        year
+      );
       let costPerDay = this.getFuelCostPerDay(data.value);
       totalFuelCost += costPerDay * workingDaysInMonth;
     }
 
-    this.userSavingsReport.totalFuelSavings += totalFuelCost;
-    console.log(this.userSavingsReport.totalFuelSavings);
+    return this.formatCurrency(totalFuelCost);
   }
 
-  getFuelCostPerDay(fuelCost: number) {
-    let totalMiles = (this.user.commute.commuteDistancePerDay + this.user.childCare.commuteInMilesPerDay) * 2;
+  private formatCurrency(value: number) {
+    return value > 0 ? Math.round(value * 100) / 100 : 0;
+  }
+
+  private getFuelCostPerDay(fuelCost: number) {
+    let totalMiles =
+      (this.user.commute.commuteDistancePerDay +
+        this.user.childCare.commuteInMilesPerDay) *
+      2;
 
     // TODO: get mgp by auto type / allow for default mpg and override default mpg from UI
-    let mpg = this.autoService.getMpgByAutoType(this.user.commute.autoType);
+    let mpg = this.autoService.getMpgByAutoType(
+      AutoType[this.user.commute.autoType as keyof typeof AutoType]
+    );
     let gallonsUsedPerDay = (totalMiles * 2) / mpg;
     return fuelCost * gallonsUsedPerDay;
-  }  
+  }
 }

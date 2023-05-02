@@ -11,6 +11,5 @@ export class User {
   childCare: ChildCare = new ChildCare();        
   misc: Misc = new Misc();
   state: State = new State();
-  city?: City;
-  totalDaysWorkedRemote: number = 0;
+  city?: City;  
 }

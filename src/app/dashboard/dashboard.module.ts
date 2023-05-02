@@ -1,12 +1,11 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { DashboardComponent } from './dashboard.component';
 import { NgMaterialModule } from '../shared/ng-material-module.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { CommuteComponent } from './components/commute/commute.component';
-import { BarVerticalComponent, NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReportsComponent } from './components/reports/reports.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
@@ -30,8 +29,7 @@ const routes: Routes = [
       { path: 'reports', component: ReportsComponent },      
       { path: 'work', component: WorkHistoryComponent },
       { path: 'location', component: LocationComponent },
-      { path: 'food', component: FoodComponent },
-      { path: 'commute', component: CommuteComponent},
+      { path: 'food', component: FoodComponent },      
       { path: 'start', component: StartComponent},
       { path: 'transportation', component: TransportationComponent},
       { path: 'misc', component: MiscComponent },
@@ -45,8 +43,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [      
     DashboardComponent,      
-    SidenavComponent, 
-    CommuteComponent, 
+    SidenavComponent,     
     ReportsComponent, 
     ToolbarComponent, 
     WorkHistoryComponent, 
@@ -57,7 +54,7 @@ const routes: Routes = [
     MiscComponent, 
     ChildComponent, 
     SummaryComponent, 
-    LocationComponent
+    LocationComponent,    
   ],
   imports: [
     CommonModule,
@@ -67,12 +64,15 @@ const routes: Routes = [
     BrowserAnimationsModule,    
     ReactiveFormsModule,
     CustomValidatorsModule,
-    CustomInputModule,
+    CustomInputModule,    
     RouterModule.forChild(routes),    
   ],  
   providers: [
     FuelCostService,
     ReportService,    
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
   ]
 })
 export class DashboardModule { }

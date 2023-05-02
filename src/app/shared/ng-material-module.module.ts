@@ -76,7 +76,8 @@ import { MatTableModule } from '@angular/material/table';
     MatTooltipModule,
     MatPaginatorModule,
     MatSortModule,
-    MatTableModule
+    MatTableModule,
+    MatSidenavModule
   ]
 })
 export class NgMaterialModule { }

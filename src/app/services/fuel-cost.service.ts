@@ -1,28 +1,32 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Fuel } from '../models/fuel.model';
 import { FuelType } from '../models/fuel-type';
+import FuelData from '../../assets/fuel.json';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class FuelCostService{
-
-  private _fuelTypeData = `[{"name":"Regular","value":"Regular Gasoline"},{"name":"Midgrade","value":"Midgrade Gasoline"},{"name":"Premium","value":"Premium Gasoline"},{"name":"Diesel","value":"No 2 Diesel"},{"name":"Other","value":"Total Gasoline"}]`;
+export class FuelCostService {
   private _fuleData: BehaviorSubject<Fuel[]>;
+  private _fuelTypeData: FuelType[] = FuelData;
 
   private dataStore: {
     fuleData: Fuel[];
-  }
+  };
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private recaptchaV3Service: ReCaptchaV3Service
+  ) {
     this._fuleData = new BehaviorSubject<Fuel[]>([]);
     this.dataStore = { fuleData: [] };
-   }
-  
-  getFuelDataByFuelType(fuelType: string){    
-    return this.dataStore.fuleData.filter(x => x['product-name'] == fuelType);    
+  }
+
+  getFuelDataByFuelType(fuelType: string) {
+    return this.dataStore.fuleData.filter((x) => x['product-name'] == fuelType);
   }
 
   get fuelData(): Observable<Fuel[]> {
@@ -30,30 +34,40 @@ export class FuelCostService{
   }
 
   getfuelTypes(): FuelType[] {
-    return JSON.parse(this._fuelTypeData);
+    return this._fuelTypeData;
   }
 
-  loadFuelData(area: string, startDate: Date, endDate: Date){
-    
-    let startDateString = `${startDate.getFullYear()}-${("0" + (startDate.getMonth() + 1)).slice(-2)}`;
-    let endDateString = `${endDate.getFullYear()}-${("0" + (startDate.getMonth() + 1)).slice(-2)}`;
-    let apiKey = '';
-    const epiUrl = `https://api.eia.gov/v2/petroleum/pri/gnd/data/?frequency=monthly&facets[duoarea][]=${area}&data[]=value&start=${startDateString}&end=${endDateString}&sort[0][column]=period&sort[0][direction]=desc&api_key=${apiKey}`;
-    
-    console.log("Loading Fuel Data...");
+  loadFuelData(area: string, startDate: Date, endDate: Date) {
+    let startDateString = `${startDate.getFullYear()}-${(
+      '0' +
+      (startDate.getMonth() + 1)
+    ).slice(-2)}`;
+    let endDateString = `${endDate.getFullYear()}-${(
+      '0' +
+      (startDate.getMonth() + 1)
+    ).slice(-2)}`;
 
-    this.http.get<Fuel[]>(epiUrl)
-    .subscribe({
-      next: (data) => this.populateFuelDataHandler(data),
-      error: (err) => this.ErrorHandler(err),
-      complete: () => this.CompletedHandler("fuel data loaded")
-    });     
+    console.log('Loading Fuel Data...');
+
+    this.recaptchaV3Service.execute('action').subscribe((token) => {
+      console.log(token);
+
+      let energyApiUrl = `https://us-central1-remote-work-history-fc52c.cloudfunctions.net/api?area=${area}&startDate=${startDateString}&endDate=${endDateString}`;
+
+      const headers = new HttpHeaders({ 'x-firebase-appcheck': token });
+
+      this.http.get<Fuel[]>(energyApiUrl, { headers }).subscribe({
+        next: (data) => this.populateFuelDataHandler(data),
+        error: (err) => this.ErrorHandler(err),
+        complete: () => this.CompletedHandler('fuel data loaded'),
+      });
+    });
   }
 
-  populateFuelDataHandler(fuelData: any){
-    let data: any[] = fuelData.response.data;    
-
-    this.dataStore.fuleData = data.map(d => {
+  populateFuelDataHandler(fuelData: any) {
+    let data: any[] = fuelData.response.data;
+    console.log(data);
+    this.dataStore.fuleData = data.map((d) => {
       let fd = new Fuel();
       fd.duoarea = d.duoarea;
       fd.period = d.period;
@@ -65,14 +79,14 @@ export class FuelCostService{
       return fd;
     });
 
-    this._fuleData.next(Object.assign({}, this.dataStore).fuleData);    
+    this._fuleData.next(Object.assign({}, this.dataStore).fuleData);
   }
 
-  ErrorHandler(error: any){
+  ErrorHandler(error: any) {
     console.log(error);
   }
 
-  CompletedHandler(message: string){
+  CompletedHandler(message: string) {
     console.log(message);
   }
 }

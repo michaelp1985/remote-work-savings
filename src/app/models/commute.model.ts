@@ -4,7 +4,7 @@ export class Commute {
     transportationType: string = '';
     commuteMinutesPerDay: number = 0; 
     commuteDistancePerDay: number = 0;
-    autoType: AutoType = AutoType.Other;
+    autoType: string = '';
     fuelType: string = '';        
     publicTransportationCostPerDay?: number;
     

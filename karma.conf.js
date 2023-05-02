@@ -25,10 +25,10 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/remote-work-savings'),
-      subdir: '.',
+      dir: 'coverage/',      
       reporters: [
-        { type: 'html' },
+        { type: 'html', subdir: 'html' },
+        { type: 'lcov', subdir: 'lcov'},
         { type: 'text-summary' }
       ]
     },

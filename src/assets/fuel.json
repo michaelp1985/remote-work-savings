@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Regular",
+    "value": "Regular Gasoline"
+  }, {
+    "name": "Midgrade",
+    "value": "Midgrade Gasoline"
+  }, {
+    "name": "Premium",
+    "value": "Premium Gasoline"
+  }, {
+    "name": "Diesel",
+    "value": "No 2 Diesel"
+  }, {
+    "name": "Other",
+    "value": "Total Gasoline"
+  }
+]

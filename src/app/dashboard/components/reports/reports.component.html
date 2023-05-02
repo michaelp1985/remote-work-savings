@@ -1,51 +1,96 @@
 <mat-card>
-    <mat-card-header>
-      <mat-card-title>
-        Savings Report
-      </mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="report-summary-container">
-        <div class="report-summary-item">
-        Total Money Saved: ${{userSavingsReport.totalMoneySavings}} 
-        <em style="font-size: 10px;">(USD)</em>
-        </div>        
-        <div class="report-summary-item">
-          Total Time Saved: {{userSavingsReport.totalTimeSavings}} 
-          <em style="font-size: 10px;">(Minutes)</em>
-        </div>
-    </mat-card-content>
-</mat-card>  
-
-<mat-card name="Reports" id="userReports">
-  <mat-card-content>
-    <div class="chart-container chart-item-dark">
-      <ngx-charts-pie-chart [ngClass]="darkMode === true ? 'pie-label-style' : 'pie-label chart-item-light'"         
-        [view]="view"                        
-        [results]="costReport.data"        
-        [labels]="true"         
-      ></ngx-charts-pie-chart> 
-      <div class="chart-title-dark">{{ costReport.title }}</div>    
+  <mat-card-header>
+    <mat-card-title> Savings Report </mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="report-summary-container">
+    <div class="report-summary-item">
+      Total Money Saved: ${{ userCostSavingsReport.totalMoneySavings }}
+      <em style="font-size: 10px">(USD)</em>
     </div>
-    <div class="chart-container chart-item-dark">
-      <ngx-charts-pie-chart [ngClass]="darkMode === true ? 'pie-label-style' : 'pie-label chart-item-light'"        
-        [view]="view"
-        [customColors]="colorScheme"
-        [results]="timeReport.data"        
-        [labels]="true"        
-      ></ngx-charts-pie-chart>      
-      <div class="chart-title-dark">{{ timeReport.title }}</div>   
-    </div>
-    <div class="chart-container chart-item-dark">      
-      <ngx-charts-bar-vertical
-        [view]="barView"  
-        [customColors]="colorScheme"      
-        [results]="timeBreakdownReport.data"        
-        [xAxis]="true"
-        [yAxis]="true"                
-        [showYAxisLabel]="true"        
-        [yAxisLabel]="yAxisLabel">
-      </ngx-charts-bar-vertical>
-      <div class="chart-title-dark">{{ timeBreakdownReport.title }}</div> 
+    <div class="report-summary-item">
+      Total Time Saved: {{ userTimeSavingsReport.totalTimeSaved }}
+      <em style="font-size: 10px">(Minutes)</em>
     </div>
   </mat-card-content>
 </mat-card>
+
+<div class="report-body-container">
+  <mat-card id="totalCostSavingsReport">
+    <mat-card-title>
+      {{ costReport.title }}
+    </mat-card-title>
+    <mat-card-content>
+      <div class="chart-item">
+        <ngx-charts-pie-chart
+          [ngClass]="darkMode === true ? 'pie-label-style' : 'pie-label chart-item-light'"
+          [view]="view"
+          [customColors]="pieChartColorScheme"
+          [results]="costReport.data"
+          [labels]="true"
+        ></ngx-charts-pie-chart>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card id="totalTimeSavingsReport">
+    <mat-card-title>
+      {{ timeReport.title }}
+    </mat-card-title>
+    <mat-card-content>
+      <div class="chart-item">
+        <ngx-charts-pie-chart
+          [ngClass]="darkMode === true ? 'pie-label-style' : 'pie-label chart-item-light'"
+          [view]="view"
+          [customColors]="pieChartColorScheme"
+          [results]="timeReport.data"
+          [labels]="true"
+        ></ngx-charts-pie-chart>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card id="costSavingsBreakdownReport">
+    <mat-card-title>
+      {{ costBreakdownReport.title }}
+    </mat-card-title>
+    <mat-card-content>
+        <table mat-table class="report-table" [dataSource]="costBreakdownReport.data">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Time Period</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef>$ USD</th>
+            <td mat-cell *matCellDef="let element">{{ element.value }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"
+            [ngClass]="i % 2 === 0 ? 'even-row' : 'odd-row'">
+          </tr>
+        </table>    
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card id="timeSavingsBreakdownReport">
+    <mat-card-title>
+      {{ timeBreakdownReport.title }}
+    </mat-card-title>
+    <mat-card-content>
+        <table mat-table class="report-table" [dataSource]="timeBreakdownReport.data">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Time Period</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef># of Minutes</th>
+            <td mat-cell *matCellDef="let element">{{ element.value }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"
+            [ngClass]="i % 2 === 0 ? 'even-row' : 'odd-row'">
+          </tr>
+        </table>    
+    </mat-card-content>
+  </mat-card>
+</div>
+

@@ -20,7 +20,6 @@ export class FoodComponent implements OnInit {
 
   ngOnDestroy() {
     this.userService.user.misc.foodCostPerWeek = this.foodCostPerWeek;
-    this.userService.user.misc.beverageCostPerWeek = this.beverageCostPerWeek;
-    this.userService.calculateFoodBeverageCost();
+    this.userService.user.misc.beverageCostPerWeek = this.beverageCostPerWeek;    
   }
 }

@@ -11,11 +11,6 @@ export class CurrencyInputDirectiveDirective{
     this.el = this.elementRef.nativeElement;
   }
 
-  @HostListener('input', ['$event.target.value'])
-  onInput(value: string){    
-    //this.el.value = this.formatAsCurrency(value);
-  }
-
   @HostListener('focus', ['$event.target.value'])
   onFocus(value: string) {
     this.el.value = '';
@@ -26,20 +21,14 @@ export class CurrencyInputDirectiveDirective{
     this.el.value = this.formatAsCurrency(value);
   }
 
-  private formatAsNumber(value: string): string {
-    return value.replace(/[^\d]/g, '');
-  }
-
   private formatAsCurrency(value: string): string {
 
-    if (!value.includes('.')){
-      console.log(value);
+    if (!value.includes('.')){      
       value += '.00';
     }    
     
     const numberValue = parseFloat(value.replace(/[^\d]/g, '')) / 100;
-    let newNum = numberValue.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    console.log(newNum);
+    let newNum = numberValue.toLocaleString('en-US', { style: 'currency', currency: 'USD' });    
     return newNum;
   }
 }
