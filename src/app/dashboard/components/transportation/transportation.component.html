@@ -1,0 +1,101 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Transportation
+    </mat-card-title>
+    <mat-card-subtitle>
+      We gather transportation information to help us determine how much time and money you've saved by working remote.
+    </mat-card-subtitle>
+  </mat-card-header>  
+
+  <form [formGroup]="form">
+    <mat-card-content>      
+      <mat-form-field appearance="fill">
+        <mat-hint>Chose your mode of transportation</mat-hint>      
+        <mat-label>Transportation Type</mat-label>
+        <mat-select [(ngModel)]="selectedTransportation" (valueChange)="toggleFormControls($event)" formControlName="transportationMode">
+          <mat-select-trigger>{{selectedTransportation}}</mat-select-trigger>          
+          <mat-option *ngFor="let type of transportationTypes" [value]="type">
+            {{type}}
+          </mat-option>
+        </mat-select>          
+      </mat-form-field>      
+
+      <div *ngIf="selectedTransportation === TransportationType.personalMoto">
+        <mat-form-field appearance="fill">
+          <mat-hint>What kind of car do you drive?</mat-hint>      
+          <mat-label>Auto Type</mat-label>
+          <mat-select [(ngModel)]="selectedAuto" (valueChange)="getDefaultMpg($event)" formControlName="autoType">
+            <mat-select-trigger>{{selectedAuto}}</mat-select-trigger>          
+            <mat-option *ngFor="let type of autoTypes" [value]="type">
+              {{type}}
+            </mat-option>
+          </mat-select>          
+        </mat-form-field>
+        
+        <mat-form-field appearance="fill">
+          <mat-hint>What kind of fuel does your auto use?</mat-hint>      
+          <mat-label>Fuel Type</mat-label>
+          <mat-select [(ngModel)]="selectedFuel" formControlName="fuelType">
+            <mat-select-trigger>{{selectedFuel}}</mat-select-trigger>          
+            <mat-option *ngFor="let type of fuelTypes" [value]="type.value">
+              {{type.name}}
+            </mat-option>
+          </mat-select>          
+        </mat-form-field>
+
+        <div *ngIf="selectedFuel && selectedAuto">      
+          <p>
+            Based on your Vehical Type, the average fuel consumption is {{usersMpg}} mpg. 
+            If you know the actual MPG of your vehical, you can change it below. 
+            Otherwise, leave the default average value provided.
+          </p>
+          <mat-form-field appearance="outline">
+            <mat-hint>Enter number in miles per gallon (MPG).</mat-hint>                
+            <input matInput type="tel" [(ngModel)]="usersMpg" formControlName="milesPerGallon" appClearInput>
+            <mat-error *ngIf="form.get('milesPerGallon')?.invalid && form.get('milesPerGallon')?.touched">
+              {{ form.controls['milesPerGallon'].errors?.['inValidNumber'].message }}
+            </mat-error>
+          </mat-form-field>    
+        </div> 
+      </div>
+
+      <div *ngIf="selectedTransportation">
+        <div *ngIf="selectedTransportation === TransportationType.personalMoto">      
+          <p>About how many miles is your work from your home?</p>
+          <mat-form-field appearance="outline">
+            <mat-hint>Number of miles</mat-hint>                
+            <input matInput type="tel" [(ngModel)]="milesToWork" formControlName="distanceToWork" appClearInput>
+            <mat-error *ngIf="form.get('distanceToWork')?.invalid && form.get('distanceToWork')?.touched">
+              {{ form.controls['distanceToWork'].errors?.['inValidNumber'].message }}
+            </mat-error>
+          </mat-form-field>    
+        </div> 
+
+        <div *ngIf="selectedTransportation === TransportationType.public">
+          <p>About how much does/did it cost for public transportation per week?</p>
+          <mat-form-field appearance="outline">
+            <mat-hint>Cost in dollars</mat-hint>                
+            <input matInput type="tel" [(ngModel)]="publicTransportationCost" formControlName="publicCost" appCurrencyInput>
+            <mat-error *ngIf="form.get('publicCost')?.invalid && form.get('publicCost')?.touched">
+              {{ form.controls['publicCost'].errors?.['inValidNumber'].message }}
+            </mat-error>
+          </mat-form-field> 
+        </div>
+
+        <div>      
+          <p>About how long does/did it take you to get to work?</p>
+          <mat-form-field appearance="outline">
+            <mat-hint>Enter number in minutes.</mat-hint>                
+            <input matInput type="tel" [(ngModel)]="minutesToWork" formControlName="timeToWork" appClearInput>
+            <mat-error *ngIf="form.get('timeToWork')?.invalid && form.get('timeToWork')?.touched">
+              {{ form.controls['timeToWork'].errors?.['inValidNumber'].message }}
+            </mat-error>
+          </mat-form-field>    
+        </div> 
+      </div> 
+    </mat-card-content>
+  </form>
+</mat-card>
+
+<app-navigation [shownext]="form.valid"></app-navigation>

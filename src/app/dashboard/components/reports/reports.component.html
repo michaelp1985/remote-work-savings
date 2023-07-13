@@ -1,0 +1,128 @@
+<div class="sharethis-inline-follow-buttons share-style"></div>
+
+<mat-card>
+  <mat-card-content>        
+    <hr>
+    <div class="pdf-container">
+      <mat-icon (click)="savePDF()">picture_as_pdf</mat-icon> Download Report
+    </div>    
+  </mat-card-content>
+</mat-card>
+
+<div id="reportImage">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Savings Report </mat-card-title>      
+    </mat-card-header>
+    <mat-card-content class="report-summary-container">
+      <div class="report-summary-item">
+        Total Money Saved: ${{ userCostSavingsReport.totalMoneySavings }}
+        <em style="font-size: 10px">(USD)</em>
+      </div>
+      <div class="report-summary-item">
+        Total Time Saved: 
+        {{totalTimeSavedReport.daysSaved}} <em style="font-size: 10px">Days</em> |
+        {{totalTimeSavedReport.hoursSaved}} <em style="font-size: 10px">Hours</em> |
+        {{totalTimeSavedReport.minutesSaved}} <em style="font-size: 10px">Minutes</em>        
+      </div>      
+    </mat-card-content>
+  </mat-card>
+
+  <div class="report-body-container">
+    <mat-card id="totalCostSavingsReport">
+      <mat-card-title>
+        {{ costReport.title }}
+      </mat-card-title>
+      <mat-card-content>
+        <div class="chart-item">
+          <ngx-charts-pie-chart
+            [ngClass]="darkMode === true ? 'pie-label-style' : 'pie-label chart-item-light'"
+            [view]="view"
+            [customColors]="pieChartColorScheme"
+            [results]="costReport.data"
+            [labels]="true"
+          ></ngx-charts-pie-chart>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card id="totalTimeSavingsReport">
+      <mat-card-title>
+        {{ timeReport.title }}
+      </mat-card-title>
+      <mat-card-content>
+        <div class="chart-item">
+          <ngx-charts-pie-chart
+            [ngClass]="darkMode === true ? 'pie-label-style' : 'pie-label chart-item-light'"
+            [view]="view"
+            [customColors]="pieChartColorScheme"
+            [results]="timeReport.data"
+            [labels]="true"
+          ></ngx-charts-pie-chart>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card id="costSavingsBreakdownReport">
+      <mat-card-title>
+        {{ costBreakdownReport.title }}
+      </mat-card-title>
+      <mat-card-content>
+          <table mat-table class="report-table" [dataSource]="costBreakdownReport.data">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Time Period</th>
+              <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="value">
+              <th mat-header-cell *matHeaderCellDef>$ USD</th>
+              <td mat-cell *matCellDef="let element">{{ element.value }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"
+              [ngClass]="i % 2 === 0 ? 'even-row' : 'odd-row'">
+            </tr>
+          </table>    
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card id="timeSavingsBreakdownReport">
+      <mat-card-title>
+        {{ timeBreakdownReport.title }}
+      </mat-card-title>
+      <mat-card-content>
+          <table mat-table class="report-table" [dataSource]="timeBreakdownReport.data">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Time Period</th>
+              <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="value">
+              <th mat-header-cell *matHeaderCellDef>Days:Hours:Minutes</th>
+              <td mat-cell *matCellDef="let element">{{ element.value }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"
+              [ngClass]="i % 2 === 0 ? 'even-row' : 'odd-row'">
+            </tr>
+          </table>    
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<mat-card>
+  <mat-card-content>        
+    <hr>
+    <h2>
+      What's next? 
+    </h2>   
+    <p>
+      <strong>1.</strong> Share your report with your friends and family. <br>
+      <strong>2.</strong> Restart the process and play with the inputs to see how you can save even more money and time. <br>
+      <strong>3.</strong> Join me on <a href="https://www.linkedin.com/in/michaelpetty-stl/">LinkedIn</a> to continue the conversation and follow me for updates. <br>
+      <strong>4.</strong> Check out our <a matLine [routerLink]="['/about']">About</a> page to learn more about the app and how it works. <br>
+    </p>
+  </mat-card-content>
+</mat-card>
+
+<app-navigation [showStart]="true"></app-navigation>
+<div (click)="setShareImage()" class="sharethis-sticky-share-buttons"></div>

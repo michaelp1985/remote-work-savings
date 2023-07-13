@@ -1,0 +1,32 @@
+<mat-card>
+  <mat-card-header>
+    <h2>Misc Items</h2>
+  </mat-card-header>
+
+  <form [formGroup]="form">
+    <mat-card-content>
+      <div>      
+        <p>Estimated clothing cost per year:</p>
+        <mat-form-field appearance="outline">
+          <mat-hint>Enter amount in USD (dollars)</mat-hint>                
+          <input matInput type="tel" [(ngModel)]="clothingCost" formControlName="clothingCostPerYear" appCurrencyInput>
+          <mat-error *ngIf="form.get('clothingCostPerYear')?.invalid && form.get('clothingCostPerYear')?.touched">
+            {{ form.controls['clothingCostPerYear'].errors?.['inValidNumber'].message }}
+          </mat-error>
+        </mat-form-field>    
+      </div>    
+      <div>      
+        <p>Estimated time saved getting ready for work each morning:</p>
+        <mat-form-field appearance="outline">
+          <mat-hint>Enter amount in minutes</mat-hint>                
+          <input matInput type="tel" [(ngModel)]="gettingReadyTimeInMinutes" formControlName="morningRoutineInMinutes" appClearInput>
+          <mat-error *ngIf="form.get('morningRoutineInMinutes')?.invalid && form.get('morningRoutineInMinutes')?.touched">
+            {{ form.controls['morningRoutineInMinutes'].errors?.['inValidNumber'].message }}
+          </mat-error>
+        </mat-form-field>    
+      </div> 
+    </mat-card-content>
+  </form>
+</mat-card>
+
+<app-navigation [shownext]="true"></app-navigation>

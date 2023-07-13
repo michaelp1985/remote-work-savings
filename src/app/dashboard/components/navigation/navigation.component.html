@@ -1,0 +1,11 @@
+<div class="navigation"> 
+    <button mat-raised-button color="primary" *ngIf="!showStart" (click)="previous()" class="navigation-left" [disabled]="currentPage === 0 && !showStart">
+      <mat-icon>chevron_left</mat-icon>Previous
+    </button>  
+    <button mat-raised-button color="primary" *ngIf="!showStart" (click)="next()" class="navigation-right" [disabled]="currentPage !== lastPage && !shownext">
+      Next<mat-icon>chevron_right</mat-icon> 
+    </button>
+    <button mat-raised-button color="primary" *ngIf="showStart" (click)="start()" class="navigation-center">
+      {{startButtonText}}
+    </button>   
+</div>

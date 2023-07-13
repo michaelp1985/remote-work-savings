@@ -1,0 +1,10 @@
+{
+  "hosting": [
+    {
+      "target": "remote-work-savings",
+      "source": ".",
+      "frameworksBackend": {},
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    }
+  ]
+}

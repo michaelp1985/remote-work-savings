@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-card-header>
+    <h2>Work Holidays</h2>
+  </mat-card-header>
+
+  <form [formGroup]="form">
+    <mat-card-content>
+      <div>      
+        <p class="indented">
+          The average amount of holidays a company provides in the United States is 6 per year.
+          You may use the average or change it to the amount of holidays your company provides.
+          If you're not sure then you can leave it as 6 or set it to whatever you think is best.
+        </p>
+        <p>
+          You should not include any pto, sick, vaction, or any other type of time off that is not a holiday.
+        </p>
+        <mat-form-field appearance="outline">             
+          <mat-label>Total holidays per year</mat-label>           
+          <input matInput type="tel" [(ngModel)]="holidayCount" formControlName="workHolidayCount" appClearInput>
+          <mat-error *ngIf="form.get('workHolidayCount')?.invalid && form.get('workHolidayCount')?.touched">
+            {{ form.controls['workHolidayCount'].errors?.['inValidNumber'].message }}
+          </mat-error>
+        </mat-form-field>    
+      </div>          
+    </mat-card-content>
+  </form>
+</mat-card>
+
+<app-navigation [shownext]="true"></app-navigation>
