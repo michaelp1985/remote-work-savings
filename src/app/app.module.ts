@@ -9,6 +9,9 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { UserService } from './services/user.service';
 import { RecaptchaV3Module, RECAPTCHA_V3_SITE_KEY } from 'ng-recaptcha';
 import { SameSiteInterceptor } from './shared/same-site-interceptor';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { provideFunctions, getFunctions } from '@angular/fire/functions';
 
 const routes: Routes = [
   {
@@ -29,6 +32,8 @@ const routes: Routes = [
     HttpClientModule,
     RecaptchaV3Module,
     RouterModule.forRoot(routes),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFunctions(() => getFunctions()),
   ],
   providers: [
     UserService,

@@ -1,29 +1,60 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss']
+  styleUrls: ['./navigation.component.scss'],
 })
-export class NavigationComponent implements OnInit {
+export class NavigationComponent implements OnInit, AfterViewInit {
   static currentPage: number = 0;
   @Input() shownext = false;
+  @Input() showprevious = false;
+  showStart = false;  
+  startButtonText = 'Get Started!';
 
-  pageNaviagtion = ['start', 'work', 'location', 'transportation', 'food', 'child', 'misc', 'summary'];
+  pageNaviagtion = [
+    'start',
+    'work',
+    'work-holidays',
+    'location',
+    'transportation',
+    'food',
+    'child',
+    'misc',
+    'summary',
+    'reports',
+  ];
   lastPage: number;
 
-  constructor(private router: Router) {    
+  constructor(private router: Router) {
     this.lastPage = this.pageNaviagtion.length - 1;
-   }
-
-  ngOnInit(): void {    
   }
 
-  previous() {    
+  ngAfterViewInit(): void {
+    this.scrollToTop();
+  }
+
+  ngOnInit(): void {
+    let currentPage = this.getCurrentPageName();
+    this.showStart = currentPage === 'start' || currentPage === 'reports';    
+
+    if (currentPage === 'reports') {
+      this.startButtonText = 'Restart Process';
+    }
+  }
+
+  start() {
+    NavigationComponent.currentPage = 1;
+    let nextPage = '/' + this.pageNaviagtion[NavigationComponent.currentPage];
+    this.router.navigate([nextPage]);
+  }
+
+  previous() {
     let page = this.getCurrentPageName();
     NavigationComponent.currentPage = this.pageNaviagtion.indexOf(page) - 1;
-    let previousPage = '/' + this.pageNaviagtion[NavigationComponent.currentPage];
+    let previousPage =
+      '/' + this.pageNaviagtion[NavigationComponent.currentPage];
     this.router.navigate([previousPage]);
   }
 
@@ -31,14 +62,22 @@ export class NavigationComponent implements OnInit {
     let page = this.getCurrentPageName();
     NavigationComponent.currentPage = this.pageNaviagtion.indexOf(page) + 1;
     let nextPage = '/' + this.pageNaviagtion[NavigationComponent.currentPage];
-    this.router.navigate([nextPage]);    
+    this.router.navigate([nextPage]);
   }
 
-  getCurrentPageName(){
-    return this.router.url.split('/').pop() ?? "";
+  getCurrentPageName() {
+    return this.router.url.split('/').pop() ?? '';
   }
-  
-  public get currentPage() : number {
+
+  public get currentPage(): number {
     return NavigationComponent.currentPage;
-  }  
+  }
+
+  scrollToTop() {
+    let top = document.getElementById('top');
+    if (top !== null) {
+      top.scrollIntoView();
+      top = null;
+    }
+  }
 }

@@ -7,14 +7,26 @@
   }
 }
 
+.share-style {
+  margin-top: 10px;
+}
+
+.pdf-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
 .report-body-container {
   display: flex;
-  flex-wrap: wrap;  
-
+  flex-wrap: wrap;
 
   .mat-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: column;    
+
     max-width: 350px;
     min-width: 310px;
     margin: 3px;
@@ -26,7 +38,7 @@
 
     mat-card-title {
       text-align: center;
-      padding-bottom: 10px;      
+      padding-bottom: 10px;
     }
 
     mat-card-header {
@@ -35,7 +47,7 @@
     }
 
     .mat-card-content {
-      display: flex;        
+      display: flex;
 
       .chart-item {
         border: 1px solid #ddd;

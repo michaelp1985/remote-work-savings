@@ -12,10 +12,10 @@ import { DataFormatService } from './data-format.service';
   providedIn: 'root',
 })
 export class ReportService {
-  userSavingsReport: any;
+  userSavingsReport: UserCostSavingsReport;
 
   constructor(private readonly userService: UserService) {
-    this.userSavingsReport = null;
+    this.userSavingsReport = this.getUserCostSavingsReport();
   }
 
   getUserCostSavingsReport() {
@@ -33,6 +33,11 @@ export class ReportService {
       userSavingsReport.totalFuelSavings +
       userSavingsReport.totalFoodBeverageSavings +
       userSavingsReport.totalMiscSavings;
+
+    // round total money savings to 2 decimal places using math.round
+    userSavingsReport.totalMoneySavings = Math.round(
+      userSavingsReport.totalMoneySavings * 100
+    ) / 100;
 
     this.userSavingsReport = userSavingsReport;
 
@@ -57,7 +62,7 @@ export class ReportService {
   }
 
   getUserCostSavingsReports() {
-    const report = this.getUserCostSavingsReport();
+    const report = this.userSavingsReport;
 
     const costSavingsReport: CostSavingsReport[] = [
       {
@@ -116,17 +121,17 @@ export class ReportService {
 
     const timeSavingsBreakdown: any[] = [
       {
-        name: 'Day',
+        name: 'Per Day',
         value: DataFormatService.formatMinutesAsDaysHoursMinutes(minsPerDay),
       },
       {
-        name: 'Week',
+        name: 'Per Week',
         value: DataFormatService.formatMinutesAsDaysHoursMinutes(
           Math.round(minsPerDay * user.remoteWorkHistory.remoteWorkDaysPerWeek)
         ),
       },
       {
-        name: 'Month',
+        name: 'Per Month',
         value: DataFormatService.formatMinutesAsDaysHoursMinutes(
           Math.round(
             minsPerDay *
@@ -135,7 +140,7 @@ export class ReportService {
         ),
       },
       {
-        name: 'Year',
+        name: 'Per Year',
         value: DataFormatService.formatMinutesAsDaysHoursMinutes(
           Math.round(
             minsPerDay *
@@ -161,11 +166,11 @@ export class ReportService {
 
     const costSavingsBreakdown: any[] = [
       {
-        name: 'Day',
+        name: 'Per Day',
         value: DataFormatService.formatAsCurrency(costPerDay),
       },
       {
-        name: 'Week',
+        name: 'Per Week',
         value: DataFormatService.formatAsCurrency(
           Math.round(
             costPerDay *
@@ -174,7 +179,7 @@ export class ReportService {
         ),
       },
       {
-        name: 'Month',
+        name: 'Per Month',
         value: DataFormatService.formatAsCurrency(
           Math.round(
             costPerDay *
@@ -184,7 +189,7 @@ export class ReportService {
         ),
       },
       {
-        name: 'Year',
+        name: 'Per Year',
         value: DataFormatService.formatAsCurrency(
           Math.round(
             costPerDay *

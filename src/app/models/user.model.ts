@@ -6,7 +6,7 @@ import { RemoteWorkhistory } from "./remote-workhistory.model";
 import { State } from "./state.model";
 
 export class User {
-  remoteWorkHistory: RemoteWorkhistory = new RemoteWorkhistory();
+  remoteWorkHistory: RemoteWorkhistory = new RemoteWorkhistory();  
   commute: Commute = new Commute(); 
   childCare: ChildCare = new ChildCare();        
   misc: Misc = new Misc();

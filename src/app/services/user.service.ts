@@ -4,30 +4,38 @@ import { User } from '../models/user.model';
 import { AutoService } from './auto.service';
 import { FuelCostService } from './fuel-cost.service';
 import { TimeSavingsService } from './time-savings.service';
-import { AutoType } from '../models/enumerations/auto-type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   timeData: TimeData;
-  user: User;
+  private cachedUser: User;
 
   constructor(
     private readonly fuelService: FuelCostService,
-    private readonly timeService: TimeSavingsService,
-    private readonly autoService: AutoService
+    private readonly timeService: TimeSavingsService
   ) {
-    this.user = new User();
+    this.cachedUser = new User();
     this.timeData = new TimeData();
   }
 
+  clearUserCache() {
+    this.cachedUser = new User();
+    this.timeData = new TimeData();
+  }
+
+  get user() {
+    console.log('caching user');
+    return this.cachedUser;
+  }
+
   populateFuelData() {
-    let area = this.user.city?.area ?? this.user.state?.area ?? '';
+    let area = this.cachedUser.city?.area ?? this.cachedUser.state?.area ?? '';
     this.fuelService.loadFuelData(
       area,
-      this.user.remoteWorkHistory.startDate,
-      this.user.remoteWorkHistory.endDate
+      this.cachedUser.remoteWorkHistory.startDate,
+      this.cachedUser.remoteWorkHistory.endDate
     );
 
     this.fuelService.fuelData.subscribe((data) => {
@@ -38,63 +46,77 @@ export class UserService {
 
   getTotalFoodBeverageCost() {
     const foodBeverageCost =
-      (this.user.misc.beverageCostPerWeek + this.user.misc.foodCostPerWeek) *
+      (this.cachedUser.misc.beverageCostPerWeek +
+        this.cachedUser.misc.foodCostPerWeek) *
       this.timeData.totalWeeksSaved;
 
     return this.formatCurrency(foodBeverageCost);
   }
 
   getTotalChildCareSavings() {
-    const childCareSavings =
-      this.user.childCare.costPerWeek * this.timeData.totalWeeksSaved;
+    const workWeeks = this.timeService.getTotalRemoteWorkWeeks(
+      this.cachedUser.remoteWorkHistory
+    );
+
+    const childCareSavings = this.cachedUser.childCare.costPerWeek * workWeeks;
 
     return this.formatCurrency(childCareSavings);
   }
 
   getTotalMiscSavings() {
     const miscSavings =
-      this.user.misc.clothingCostPerYear * (this.timeData.totalWeeksSaved / 52);
+      this.cachedUser.misc.clothingCostPerYear *
+      (this.timeData.totalWeeksSaved / 52);
 
     return this.formatCurrency(miscSavings);
   }
 
   getTotalDaysWorkedRemote() {
     return this.timeService.getTotalRemoteWorkingDays(
-      this.user.remoteWorkHistory
+      this.cachedUser.remoteWorkHistory
     );
   }
 
-  getTotalTimeSavedInMinutes() {
-    return this.timeService.calculateTotalTimeSavingsToday(
-      this.user.commute,
-      this.user.remoteWorkHistory,
-      this.user.childCare,
-      this.user.misc
-    ).totalMinutesSaved;
-  }
+  // getTotalTimeSavedInMinutes() {
+  //   return this.timeService.calculateTotalTimeSavingsToday(
+  //     this.cachedUser.commute,
+  //     this.cachedUser.remoteWorkHistory,
+  //     this.cachedUser.childCare,
+  //     this.cachedUser.misc
+  //   ).totalMinutesSaved;
+  // }
 
   populateTimeData() {
     this.timeData = this.timeService.calculateTotalTimeSavingsToday(
-      this.user.commute,
-      this.user.remoteWorkHistory,
-      this.user.childCare,
-      this.user.misc
+      this.cachedUser.commute,
+      this.cachedUser.remoteWorkHistory,
+      this.cachedUser.childCare,
+      this.cachedUser.misc
     );
   }
 
   getTotalMorningRoutineTimeSaved(): number {
-    return this.timeService.calculateTotalTimeSavedByMinutes(this.user.misc.morningRoutineInMinutes, this.user.remoteWorkHistory).totalMinutesSaved;
+    return this.timeService.calculateTotalTimeSavedByMinutes(
+      this.cachedUser.misc.morningRoutineInMinutes,
+      this.cachedUser.remoteWorkHistory
+    ).totalMinutesSaved;
   }
   getTotalCommuteTimeSaved(): number {
-    return this.timeService.calculateTotalTimeSavedByMinutes(this.user.commute.commuteMinutesPerDay, this.user.remoteWorkHistory).totalMinutesSaved;
+    return this.timeService.calculateTotalTimeSavedByMinutes(
+      this.cachedUser.commute.commuteMinutesPerDay,
+      this.cachedUser.remoteWorkHistory
+    ).totalMinutesSaved;
   }
   getTotalChildCareTimeSaved(): number {
-    return this.timeService.calculateTotalTimeSavedByMinutes(this.user.childCare.commuteInMinutesPerDay, this.user.remoteWorkHistory).totalMinutesSaved;
+    return this.timeService.calculateTotalTimeSavedByMinutes(
+      this.cachedUser.childCare.commuteInMinutesPerDay,
+      this.cachedUser.remoteWorkHistory
+    ).totalMinutesSaved;
   }
 
   getTotalFuelSavings() {
     let fuelData = this.fuelService.getFuelDataByFuelType(
-      this.user.commute.fuelType ?? ''
+      this.cachedUser.commute.fuelType ?? ''
     );
     let totalFuelCost = 0;
 
@@ -118,16 +140,9 @@ export class UserService {
   }
 
   private getFuelCostPerDay(fuelCost: number) {
-    let totalMiles =
-      (this.user.commute.commuteDistancePerDay +
-        this.user.childCare.commuteInMilesPerDay) *
-      2;
+    let totalMiles = this.cachedUser.commute.commuteDistancePerDay * 2 + this.cachedUser.childCare.commuteInMilesPerDay;
 
-    // TODO: get mgp by auto type / allow for default mpg and override default mpg from UI
-    let mpg = this.autoService.getMpgByAutoType(
-      AutoType[this.user.commute.autoType as keyof typeof AutoType]
-    );
-    let gallonsUsedPerDay = (totalMiles * 2) / mpg;
+    let gallonsUsedPerDay = totalMiles / this.user.commute.mpg;
     return fuelCost * gallonsUsedPerDay;
   }
 }

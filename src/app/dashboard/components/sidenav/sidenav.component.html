@@ -1,20 +1,16 @@
 <mat-sidenav-container class="app-sidenav-container">
   <mat-sidenav
-    #sidenav
-    class="app-sidenav mat-elevation-z10"
-    [opened]="!isScreenSmall"
-    [mode]="isScreenSmall ? 'over' : 'side'"
-  >
+  #sidenav
+  class="app-sidenav mat-elevation-z10"
+  [opened]="false"
+  [mode]="'over'">
     <mat-toolbar color="primary"> Menu </mat-toolbar>
     <mat-nav-list>
       <mat-list-item>
-        <a matLine [routerLink]="['/start']"> Get Started </a>
+        <a matLine (click)="sidenav.toggle()" [routerLink]="['/dashboard']"> Start Here </a>
       </mat-list-item>
       <mat-list-item>
-        <a matLine [routerLink]="['/work']"> About </a>
-      </mat-list-item>
-      <mat-list-item>
-        <a matLine [routerLink]="['/report']"> My Reports </a>
+        <a matLine (click)="sidenav.toggle()" [routerLink]="['/about']"> About </a>
       </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>

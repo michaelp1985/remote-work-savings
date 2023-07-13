@@ -5,6 +5,8 @@ import { Fuel } from '../models/fuel.model';
 import { FuelType } from '../models/fuel-type';
 import FuelData from '../../assets/fuel.json';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
+import { AutoService } from './auto.service';
+import { AutoType } from '../models/enumerations/auto-type';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +21,8 @@ export class FuelCostService {
 
   constructor(
     private http: HttpClient,
-    private recaptchaV3Service: ReCaptchaV3Service
+    private recaptchaV3Service: ReCaptchaV3Service,
+    private readonly autoService: AutoService
   ) {
     this._fuleData = new BehaviorSubject<Fuel[]>([]);
     this.dataStore = { fuleData: [] };
@@ -37,6 +40,10 @@ export class FuelCostService {
     return this._fuelTypeData;
   }
 
+  getDefaultMpgByAutoType(autoType: AutoType) {
+    return this.autoService.getMpgByAutoType(autoType);
+  }
+
   loadFuelData(area: string, startDate: Date, endDate: Date) {
     let startDateString = `${startDate.getFullYear()}-${(
       '0' +
@@ -49,8 +56,7 @@ export class FuelCostService {
 
     console.log('Loading Fuel Data...');
 
-    this.recaptchaV3Service.execute('action').subscribe((token) => {
-      console.log(token);
+    this.recaptchaV3Service.execute('action').subscribe((token) => {      
 
       let energyApiUrl = `https://us-central1-remote-work-history-fc52c.cloudfunctions.net/api?area=${area}&startDate=${startDateString}&endDate=${endDateString}`;
 

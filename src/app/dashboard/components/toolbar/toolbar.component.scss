@@ -5,17 +5,34 @@ $background-color_2: blue;
 :root {
 	--iconwidth: 56px;
 }
+
+#top {	
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+// .sidenav-toggle {
+// 	display: none;
+// 	padding: 0;
+// 	margin: 8px;
+// 	min-width: var(--iconWidth);
+// 	font-size: 30px;
+// 	height: var(--iconWidth);
+// 	width: var(--iconWidth);
+// 	line-height: var(--iconWidth);
+// 	color: $color_1;
+// }
+
 .sidenav-toggle {
-	display: none;
+	display: flex;
 	padding: 0;
 	margin: 8px;
 	min-width: var(--iconWidth);
-	font-size: 30px;
-	height: var(--iconWidth);
-	width: var(--iconWidth);
-	line-height: var(--iconWidth);
-	color: $color_1;
+	align-items: center;
+	justify-content: center;
 }
+
 mat-icon {
 	font-size: 30px;
 	height: var(--iconWidth);
@@ -23,9 +40,11 @@ mat-icon {
 	line-height: var(--iconWidth);
 	color: $color_1;
 }
+
 .example-spacer {
 	flex: 1 1 auto;
 }
+
 progress {
 	width: 100%;
 	margin-left: 10px;
@@ -39,6 +58,7 @@ progress {
 		background-color: $background-color_2;
 	}
 }
+
 @media (max-width: 720px) {
 	.sidenav-toggle {
 		display: flex;

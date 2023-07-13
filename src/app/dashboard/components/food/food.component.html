@@ -1,23 +1,44 @@
 <mat-card>
   <mat-card-header>
-    <h2>Food & Beverage</h2>
+    <mat-card-title>Food & Beverage</mat-card-title>
+    <mat-card-subtitle>
+      We gather food and beverage information to help us determine how much money you've saved by working remote.
+      When answering these questions, please consider only the money you would've spent at work or work related events.
+    </mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content>
-    <div>      
-      <p>Estimated food cost per week :</p>
-      <mat-form-field appearance="outline">
-        <mat-hint>Enter amount in USD (dollars)</mat-hint>                
-        <input matInput type="currency" [(ngModel)]="foodCostPerWeek">
-      </mat-form-field>    
-    </div>
-    <div>      
-      <p>Estimated beverage cost per week :</p>
-      <mat-form-field appearance="outline">
-        <mat-hint>Enter amount in USD (dollars)</mat-hint>                
-        <input matInput type="currency" [(ngModel)]="beverageCostPerWeek">
-      </mat-form-field>    
-    </div>
-  </mat-card-content>
+
+  <form [formGroup]="form">
+    <mat-card-content>
+      <div>      
+        <p class="indented">
+          About how much money did you spend per week on average for food?
+          You should consider things like buying lunch, snacks from vending machines, and after work dinner with coworkers. 
+        </p>
+        <mat-form-field appearance="outline">
+          <mat-label>Weekly food cost</mat-label>
+          <mat-hint>Enter amount in USD (dollars)</mat-hint>                
+          <input matInput type="tel" [(ngModel)]="foodCostPerWeek" formControlName="foodCostControl" appCurrencyInput>
+          <mat-error *ngIf="form.get('foodCostControl')?.invalid && form.get('foodCostControl')?.touched">
+            {{ form.controls['foodCostControl'].errors?.['inValidNumber'].message }}
+          </mat-error>
+        </mat-form-field>    
+      </div>
+      <div>      
+        <p class="indented">
+          About how much money did you spend per week on average for beverages?
+          You should consider things like buying coffee, tea, soda, and alcohol.          
+        </p>
+        <mat-form-field appearance="outline">
+          <mat-label>Weekly beverage cost</mat-label>
+          <mat-hint>Enter amount in USD (dollars)</mat-hint>                
+          <input matInput type="tel" [(ngModel)]="beverageCostPerWeek" formControlName="beverageCostControl" appCurrencyInput>
+          <mat-error *ngIf="form.get('beverageCostControl')?.invalid && form.get('beverageCostControl')?.touched">
+            {{ form.controls['beverageCostControl'].errors?.['inValidNumber'].message }}
+          </mat-error>
+        </mat-form-field>    
+      </div>
+    </mat-card-content>
+  </form>
 </mat-card>
 
 <app-navigation [shownext]="true"></app-navigation>

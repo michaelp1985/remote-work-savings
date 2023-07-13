@@ -8,8 +8,7 @@ import { Misc } from '../models/misc';
 @Injectable({
   providedIn: 'root',
 })
-export class TimeSavingsService {
-  readonly holidaysTotal: number = 6;
+export class TimeSavingsService {  
 
   constructor() {}
 
@@ -70,6 +69,10 @@ export class TimeSavingsService {
     return remoteWorkHistory.remoteWorkDaysPerWeek * totalWeeks;
   }
 
+  getTotalRemoteWorkWeeks(remoteWorkHistory: RemoteWorkhistory) {
+    return Math.floor((remoteWorkHistory.endDate.getTime() - remoteWorkHistory.startDate.getTime()) / (1000 * 3600 * 24 * 7));
+  }
+
   getTotalPossibleWorkingDays(remoteWorkHistory: RemoteWorkhistory) {
     let currentDate = new Date();
     let startYear = remoteWorkHistory.startDate.getFullYear();
@@ -96,7 +99,7 @@ export class TimeSavingsService {
     totalDays -= weekendDays;
 
     //account for hollidays
-    totalDays -= this.holidaysTotal * (endYear - startYear);
+    totalDays -= remoteWorkHistory.holidayCountPerYear * (endYear - startYear);
 
     return Math.ceil(totalDays);
   }

@@ -4,6 +4,7 @@ import { UserTimeSavingsReport } from 'src/app/models/reports/user-time-savings-
 import { ReportService } from 'src/app/services/report.service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { TotalTimeSavedReport } from 'src/app/models/reports/total-time-saved-report';
 
 @Component({
   selector: 'app-reports',
@@ -15,6 +16,8 @@ export class ReportsComponent implements AfterContentChecked {
   darkMode = false;
   userCostSavingsReport: UserCostSavingsReport;
   userTimeSavingsReport: UserTimeSavingsReport;
+  totalTimeSavedReport: TotalTimeSavedReport;
+
   costReport: any = {
     title: 'Cost Savings',
     data: [],
@@ -42,8 +45,7 @@ export class ReportsComponent implements AfterContentChecked {
   xAxisLabel = 'Country';
   showYAxisLabel = true;
   yAxisLabel = 'Population';
-  screenWidth: number = 0;
-  private readonly chartHeight = 300;
+  screenWidth: number = 0;  
 
   view: [number, number] = [300, 300];
   pieChartColorScheme = {
@@ -60,6 +62,16 @@ export class ReportsComponent implements AfterContentChecked {
 
     this.costBreakdownReport.data =
       this.reportService.getUserCostSavingsBreakdownReport();
+    
+    var minutes = this.userTimeSavingsReport.totalTimeSaved % 60;
+    var hours = Math.floor(this.userTimeSavingsReport.totalTimeSaved / 60) % 24;
+    var days = Math.floor((this.userTimeSavingsReport.totalTimeSaved / 60) / 24);
+
+    this.totalTimeSavedReport = {
+      minutesSaved: minutes,
+      hoursSaved: hours,
+      daysSaved: days,
+    };
 
     this.screenWidth = Math.min(window.innerWidth * 0.9, 350);
   }
@@ -68,8 +80,25 @@ export class ReportsComponent implements AfterContentChecked {
     this.darkMode = !this.isLight();
   }
 
-  onSelect(event: any) {
-    console.log(event);
+  async setShareImage() {
+
+    const totalCostSavingsReport = document.getElementById(
+      'totalCostSavingsReport'
+    );
+
+    if (!totalCostSavingsReport) return;
+
+    const costReport = await html2canvas(totalCostSavingsReport, {
+      scale: 2,
+    });
+
+    const costImage1 = costReport.toDataURL('costshare/png');
+
+    let shareButtons = document.querySelector(".sharethis-sticky-share-buttons");
+
+    if (shareButtons) {
+      shareButtons.setAttribute("data-image", costImage1)
+    }
   }
 
   async savePDF() {

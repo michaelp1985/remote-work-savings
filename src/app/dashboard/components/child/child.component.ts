@@ -6,10 +6,9 @@ import { CustomValidatorsModule } from 'src/app/shared/validators/custom-validat
 @Component({
   selector: 'app-child',
   templateUrl: './child.component.html',
-  styleUrls: ['./child.component.scss']
+  styleUrls: ['./child.component.scss'],
 })
 export class ChildComponent implements OnInit {
-    
   hasChildCareSavings: boolean = false;
   hasSavedAdditionalCost: boolean = false;
 
@@ -19,43 +18,62 @@ export class ChildComponent implements OnInit {
 
   form: FormGroup;
 
-  careCost: FormControl = new FormControl(this.userService.user.childCare.costPerWeek, [
-    Validators.required,
-    CustomValidatorsModule.minNumberValidator(0.1)
-  ]);
+  careCost: FormControl = new FormControl(
+    this.userService.user.childCare.costPerWeek,
+    [
+      Validators.required,
+      CustomValidatorsModule.minNumberValidator(0.01),
+      CustomValidatorsModule.numericValidator(),
+    ]
+  );
 
-  commuteMiles: FormControl = new FormControl(this.userService.user.childCare.commuteInMilesPerDay, [
-    Validators.required,
-    CustomValidatorsModule.minNumberValidator(1)
-  ]);
+  commuteMiles: FormControl = new FormControl(
+    this.userService.user.childCare.commuteInMilesPerDay,
+    [
+      Validators.required,
+      CustomValidatorsModule.minNumberValidator(1),
+      CustomValidatorsModule.numericValidator(),
+    ]
+  );
 
-  commuteMinutes: FormControl = new FormControl(this.userService.user.childCare.commuteInMinutesPerDay, [
-    Validators.required,
-    CustomValidatorsModule.minNumberValidator(1)
-  ])
+  commuteMinutes: FormControl = new FormControl(
+    this.userService.user.childCare.commuteInMinutesPerDay,
+    [
+      Validators.required,
+      CustomValidatorsModule.minNumberValidator(1),
+      CustomValidatorsModule.numericValidator(),
+    ]
+  );
 
-  noSelector: FormControl = new FormControl('', [
-    Validators.required
-  ]);
+  noSelector: FormControl = new FormControl('', [Validators.required]);
 
-  constructor(private readonly userService: UserService) { 
+  constructor(private readonly userService: UserService) {
     this.form = new FormGroup({});
     this.form.addControl('noSelector', this.noSelector);
   }
 
   ngOnInit(): void {
     this.childCareCost = this.userService.user.childCare.costPerWeek ?? 0;
-    this.childCareCommuteMiles = this.userService.user.childCare.commuteInMilesPerDay ?? 0;
-    this.childCareCommuteMinutes = this.userService.user.childCare.commuteInMinutesPerDay ?? 0;
+    this.childCareCommuteMiles =
+      this.userService.user.childCare.commuteInMilesPerDay ?? 0;
+    this.childCareCommuteMinutes =
+      this.userService.user.childCare.commuteInMinutesPerDay ?? 0;
+
+    if (this.childCareCost > 0) {
+      this.hasSavedOnChildCare(true);
+    }
+
+    if (this.childCareCommuteMiles > 0 || this.childCareCommuteMinutes > 0) {
+      this.needToAddCostSavings(true);
+    }
   }
 
   hasSavedOnChildCare(hasSaved: boolean) {
-    
-    if (this.hasChildCareSavings != hasSaved){
-      this.hasChildCareSavings = hasSaved; 
-      this.noSelector.setValue(null);  
-    
-      if(this.hasChildCareSavings){
+    if (this.hasChildCareSavings != hasSaved) {
+      this.hasChildCareSavings = hasSaved;
+      this.noSelector.setValue(null);
+
+      if (this.hasChildCareSavings) {
         this.form.addControl('careCost', this.careCost);
       } else {
         this.form.removeControl('careCost');
@@ -68,10 +86,9 @@ export class ChildComponent implements OnInit {
     }
   }
 
-  needToAddCostSavings(additionalCost: boolean) {      
-
-    if (this.hasSavedAdditionalCost != additionalCost){
-      this.hasSavedAdditionalCost = additionalCost;  
+  needToAddCostSavings(additionalCost: boolean) {
+    if (this.hasSavedAdditionalCost != additionalCost) {
+      this.hasSavedAdditionalCost = additionalCost;
 
       if (additionalCost) {
         this.form.addControl('commuteMiles', this.commuteMiles);
@@ -88,8 +105,14 @@ export class ChildComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.userService.user.childCare.costPerWeek = this.childCareCost;
-    this.userService.user.childCare.commuteInMilesPerDay = this.childCareCommuteMiles;
-    this.userService.user.childCare.commuteInMinutesPerDay = this.childCareCommuteMinutes;
+    this.userService.user.childCare.costPerWeek = parseFloat(
+      this.childCareCost.toString().replace('$', '')
+    );
+    this.userService.user.childCare.commuteInMilesPerDay = parseInt(
+      this.childCareCommuteMiles.toString()
+    );
+    this.userService.user.childCare.commuteInMinutesPerDay = parseInt(
+      this.childCareCommuteMinutes.toString()
+    );
   }
 }

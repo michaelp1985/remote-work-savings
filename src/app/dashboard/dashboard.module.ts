@@ -22,57 +22,69 @@ import { LocationComponent } from './components/location/location.component';
 import { CustomValidatorsModule } from '../shared/validators/custom-validators.module';
 import { CustomInputModule } from '../shared/custom-input/custom-input.module';
 import { ReportService } from '../services/report.service';
+import { UserPreferenceComponent } from './components/user-preference/user-preference.component';
+import {
+  NgxAwesomePopupModule,
+  ConfirmBoxConfigModule,
+} from '@costlydeveloper/ngx-awesome-popup';
+import { WorkHolidaysComponent } from './components/work-holidays/work-holidays.component';
+import { AboutComponent } from './components/about/about.component';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent,
+  {
+    path: '',
+    component: DashboardComponent,
     children: [
-      { path: 'reports', component: ReportsComponent },      
+      { path: 'reports', component: ReportsComponent },
       { path: 'work', component: WorkHistoryComponent },
       { path: 'location', component: LocationComponent },
-      { path: 'food', component: FoodComponent },      
-      { path: 'start', component: StartComponent},
-      { path: 'transportation', component: TransportationComponent},
+      { path: 'food', component: FoodComponent },
+      { path: 'start', component: StartComponent },
+      { path: 'transportation', component: TransportationComponent },
       { path: 'misc', component: MiscComponent },
       { path: 'child', component: ChildComponent },
-      { path: 'summary', component: SummaryComponent }
-    ] 
-  },  
-  { path: '**', redirectTo: 'reports' }
-]
+      { path: 'summary', component: SummaryComponent },
+      { path: 'user-preference', component: UserPreferenceComponent },
+      { path: 'work-holidays', component: WorkHolidaysComponent },
+      { path: 'about', component: AboutComponent },
+    ],
+  },
+  { path: '**', redirectTo: 'start' },
+];
 
 @NgModule({
-  declarations: [      
-    DashboardComponent,      
-    SidenavComponent,     
-    ReportsComponent, 
-    ToolbarComponent, 
-    WorkHistoryComponent, 
-    StartComponent, 
+  declarations: [
+    DashboardComponent,
+    SidenavComponent,
+    ReportsComponent,
+    ToolbarComponent,
+    WorkHistoryComponent,
+    StartComponent,
     TransportationComponent,
-    NavigationComponent, 
-    FoodComponent, 
-    MiscComponent, 
-    ChildComponent, 
-    SummaryComponent, 
-    LocationComponent,    
+    NavigationComponent,
+    FoodComponent,
+    MiscComponent,
+    ChildComponent,
+    SummaryComponent,
+    LocationComponent,
+    UserPreferenceComponent,
+    WorkHolidaysComponent,
+    AboutComponent,
   ],
   imports: [
     CommonModule,
     NgMaterialModule,
     FormsModule,
     NgxChartsModule,
-    BrowserAnimationsModule,    
+    BrowserAnimationsModule,
     ReactiveFormsModule,
     CustomValidatorsModule,
-    CustomInputModule,    
-    RouterModule.forChild(routes),    
-  ],  
-  providers: [
-    FuelCostService,
-    ReportService,    
+    CustomInputModule,
+    RouterModule.forChild(routes),
+    NgxAwesomePopupModule.forRoot(),
+    ConfirmBoxConfigModule.forRoot(),
   ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ]
+  providers: [FuelCostService, ReportService],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class DashboardModule { }
+export class DashboardModule {}

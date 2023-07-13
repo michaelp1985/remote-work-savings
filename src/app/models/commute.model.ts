@@ -5,7 +5,8 @@ export class Commute {
     commuteMinutesPerDay: number = 0; 
     commuteDistancePerDay: number = 0;
     autoType: string = '';
-    fuelType: string = '';        
+    fuelType: string = ''; 
+    mpg: number = 0;       
     publicTransportationCostPerDay?: number;
     
     insuranceSavingsPerMonth?: number;

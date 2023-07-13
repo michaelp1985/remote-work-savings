@@ -1,16 +1,27 @@
 .navigation {
   display: flex;
-  justify-content: space-between;  
-  margin: 10px;  
-  max-width: 320px;
-}
-
-.navigation-right {
-  justify-content: flex-end;  
-  min-width: 125px;
+  justify-content: space-between;
+  margin: 0 auto;
+  margin-top: 10px;
+  max-width: 600px;
+  padding: 20px;
+  min-width: 250px;
+  z-index: 11;
+  margin-bottom: 50px;
 }
 
 .navigation-left {
-  justify-content: flex-start;  
+  justify-content: flex-start;
   min-width: 125px;
+}
+
+.navigation-right {
+  justify-content: flex-end;
+  min-width: 125px;
+}
+
+.navigation-center {
+  justify-content: center;
+  margin: 0 auto;
+  min-width: 250px;
 }

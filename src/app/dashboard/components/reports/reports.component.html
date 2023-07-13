@@ -1,8 +1,18 @@
+<div class="sharethis-inline-follow-buttons share-style"></div>
+
+<mat-card>
+  <mat-card-content>        
+    <hr>
+    <div class="pdf-container">
+      <mat-icon (click)="savePDF()">picture_as_pdf</mat-icon> Download Report
+    </div>    
+  </mat-card-content>
+</mat-card>
+
 <div id="reportImage">
   <mat-card>
     <mat-card-header>
-      <mat-card-title> Savings Report </mat-card-title>
-      <mat-icon (click)="savePDF()">picture_as_pdf</mat-icon>
+      <mat-card-title> Savings Report </mat-card-title>      
     </mat-card-header>
     <mat-card-content class="report-summary-container">
       <div class="report-summary-item">
@@ -10,9 +20,11 @@
         <em style="font-size: 10px">(USD)</em>
       </div>
       <div class="report-summary-item">
-        Total Time Saved: {{ userTimeSavingsReport.totalTimeSaved }}
-        <em style="font-size: 10px">(Minutes)</em>
-      </div>
+        Total Time Saved: 
+        {{totalTimeSavedReport.daysSaved}} <em style="font-size: 10px">Days</em> |
+        {{totalTimeSavedReport.hoursSaved}} <em style="font-size: 10px">Hours</em> |
+        {{totalTimeSavedReport.minutesSaved}} <em style="font-size: 10px">Minutes</em>        
+      </div>      
     </mat-card-content>
   </mat-card>
 
@@ -96,3 +108,21 @@
     </mat-card>
   </div>
 </div>
+
+<mat-card>
+  <mat-card-content>        
+    <hr>
+    <h2>
+      What's next? 
+    </h2>   
+    <p>
+      <strong>1.</strong> Share your report with your friends and family. <br>
+      <strong>2.</strong> Restart the process and play with the inputs to see how you can save even more money and time. <br>
+      <strong>3.</strong> Join me on <a href="https://www.linkedin.com/in/michaelpetty-stl/">LinkedIn</a> to continue the conversation and follow me for updates. <br>
+      <strong>4.</strong> Check out our <a matLine [routerLink]="['/about']">About</a> page to learn more about the app and how it works. <br>
+    </p>
+  </mat-card-content>
+</mat-card>
+
+<app-navigation [showStart]="true"></app-navigation>
+<div (click)="setShareImage()" class="sharethis-sticky-share-buttons"></div>

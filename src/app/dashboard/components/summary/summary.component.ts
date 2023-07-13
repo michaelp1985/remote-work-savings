@@ -79,14 +79,18 @@ export class SummaryComponent implements OnInit {
 
     this.summaryData.push({
       type: 'Transportation',
-      name: 'Public Trans Cost / Day',
-      value: this.user.commute.publicTransportationCostPerDay,
+      name: 'Public Trans Cost / Day',      
+      value: (this.user.commute.publicTransportationCostPerDay) ?
+      this.user.commute.publicTransportationCostPerDay.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) :
+      null,
     });
 
     this.summaryData.push({
       type: 'Misc',
       name: 'Clothing Cost / Year',
-      value: this.user.misc.clothingCostPerYear,
+      value: (this.user.misc.clothingCostPerYear > 0) ?
+      this.user.misc.clothingCostPerYear.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) :
+      null,
     });
 
     this.summaryData.push({
@@ -98,19 +102,21 @@ export class SummaryComponent implements OnInit {
     this.summaryData.push({
       type: 'Food & Beverage',
       name: 'Food Cost / Week',
-      value: this.user.misc.foodCostPerWeek,
+      value: this.user.misc.foodCostPerWeek.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
     });
 
     this.summaryData.push({
       type: 'Food & Beverage',
       name: 'Beverage Cost / Week',
-      value: this.user.misc.beverageCostPerWeek,
+      value: this.user.misc.beverageCostPerWeek.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
     });
 
     this.summaryData.push({
       type: 'Child Care',
       name: 'Child Care Cost / Week',
-      value: this.user.childCare.costPerWeek,
+      value: (this.user.childCare.costPerWeek > 0) ?
+      this.user.childCare.costPerWeek.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) :
+      null,
     });
 
     this.summaryData.push({

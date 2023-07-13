@@ -22,7 +22,8 @@ export class TransportationComponent implements OnInit {
   fuelTypes: FuelType[] = [];
   selectedFuel: string = '';
   minutesToWork: string = '';
-  milesToWork: number = 0;
+  milesToWork: string = '';
+  usersMpg: number = 0;
   publicTransportationCost: string = '';
 
   autoType: FormControl = new FormControl(
@@ -37,12 +38,12 @@ export class TransportationComponent implements OnInit {
 
   distanceToWork: FormControl = new FormControl(
     this.userService.user.commute.commuteDistancePerDay,
-    [Validators.required, CustomValidatorsModule.minNumberValidator(1)]
+    [Validators.required, CustomValidatorsModule.minNumberValidator(1), CustomValidatorsModule.numericValidator()]
   );
 
   publicCost: FormControl = new FormControl(
     this.userService.user.commute.publicTransportationCostPerDay,
-    [Validators.required, CustomValidatorsModule.minNumberValidator(0.01)]
+    [Validators.required, CustomValidatorsModule.minNumberValidator(0.01), CustomValidatorsModule.numericValidator()]
   );
 
   transportationMode: FormControl = new FormControl(
@@ -52,7 +53,12 @@ export class TransportationComponent implements OnInit {
 
   timeToWork: FormControl = new FormControl(
     this.userService.user.commute.commuteMinutesPerDay,
-    [Validators.required, CustomValidatorsModule.minNumberValidator(1)]
+    [Validators.required, CustomValidatorsModule.minNumberValidator(1), CustomValidatorsModule.numericValidator()]
+  );
+
+  milesPerGallon: FormControl = new FormControl(
+    this.userService.user.commute.mpg,
+    [CustomValidatorsModule.numericValidator()]
   );
 
   form: FormGroup;
@@ -70,28 +76,34 @@ export class TransportationComponent implements OnInit {
   ngOnInit(): void {
     this.populateSelectFields();
 
-    this.selectedAuto = this.userService.user.commute.autoType ?? '';
-    this.selectedFuel = this.userService.user.commute.fuelType ?? '';
-    this.selectedTransportation =
-      this.userService.user.commute.transportationType ?? '';
-    this.milesToWork = this.userService.user.commute.commuteDistancePerDay;
-    this.minutesToWork =
-      this.userService.user.commute.commuteMinutesPerDay.toString();
-    this.publicTransportationCost =
-      this.userService.user.commute.publicTransportationCostPerDay?.toString() ??
-      '';
+    if (this.userService.user.commute.transportationType) {
+      const transportation = <TransportationType>(
+        this.userService.user.commute.transportationType
+      );
+
+      this.toggleFormControls(transportation);
+      this.selectedTransportation =
+        this.userService.user.commute.transportationType ?? '';
+      this.selectedAuto = this.userService.user.commute.autoType ?? '';
+      this.selectedFuel = this.userService.user.commute.fuelType ?? '';
+
+      this.milesToWork =
+        this.userService.user.commute.commuteDistancePerDay.toString();
+      this.minutesToWork = (
+        this.userService.user.commute.commuteMinutesPerDay / 2
+      ).toString();
+      this.publicTransportationCost =
+        this.userService.user.commute.publicTransportationCostPerDay?.toString() ??
+        '';
+    }
   }
 
   toggleFormControls(transportationType: TransportationType) {
-    // - remove non default fields
     Object.keys(this.form.controls).forEach((key) => {
       if (key !== 'transportationMode' && key !== 'timeToWork') {
         this.form.removeControl(key);
       }
     });
-
-    this.form.addControl('transportationMode', this.transportationMode);
-    this.form.addControl('timeToWork', this.timeToWork);
 
     switch (transportationType) {
       case TransportationType.public:
@@ -101,11 +113,16 @@ export class TransportationComponent implements OnInit {
         this.form.addControl('autoType', this.autoType);
         this.form.addControl('fuelType', this.fuelType);
         this.form.addControl('distanceToWork', this.distanceToWork);
+        this.form.addControl('milesPerGallon', this.milesPerGallon);
         break;
       case TransportationType.personalNonMoto:
       case TransportationType.other:
         break;
     }
+  }
+
+  getDefaultMpg(autoType: AutoType) {
+    this.usersMpg = this.fuelService.getDefaultMpgByAutoType(autoType);
   }
 
   private populateSelectFields() {
@@ -124,11 +141,14 @@ export class TransportationComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    this.userService.user.commute.mpg = parseInt(this.usersMpg.toString());
     this.userService.user.commute.autoType = <AutoType>this.selectedAuto;
     this.userService.user.commute.fuelType = this.selectedFuel;
     this.userService.user.commute.transportationType =
       this.selectedTransportation;
-    this.userService.user.commute.commuteDistancePerDay = this.milesToWork;
+    this.userService.user.commute.commuteDistancePerDay = parseInt(
+      this.milesToWork
+    );
     this.userService.user.commute.commuteMinutesPerDay =
       parseInt(this.minutesToWork) * 2;
     this.userService.user.commute.publicTransportationCostPerDay = parseFloat(
