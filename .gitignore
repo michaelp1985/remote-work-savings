@@ -37,6 +37,7 @@ yarn-error.log
 testem.log
 /typings
 /src/environments/*
+google*.html
 
 # System files
 .DS_Store

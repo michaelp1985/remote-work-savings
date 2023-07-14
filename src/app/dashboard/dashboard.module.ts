@@ -23,12 +23,9 @@ import { CustomValidatorsModule } from '../shared/validators/custom-validators.m
 import { CustomInputModule } from '../shared/custom-input/custom-input.module';
 import { ReportService } from '../services/report.service';
 import { UserPreferenceComponent } from './components/user-preference/user-preference.component';
-import {
-  NgxAwesomePopupModule,
-  ConfirmBoxConfigModule,
-} from '@costlydeveloper/ngx-awesome-popup';
 import { WorkHolidaysComponent } from './components/work-holidays/work-holidays.component';
 import { AboutComponent } from './components/about/about.component';
+import { ShareThisComponent } from './components/share-this/share-this.component';
 
 const routes: Routes = [
   {
@@ -70,6 +67,7 @@ const routes: Routes = [
     UserPreferenceComponent,
     WorkHolidaysComponent,
     AboutComponent,
+    ShareThisComponent,
   ],
   imports: [
     CommonModule,
@@ -81,9 +79,8 @@ const routes: Routes = [
     CustomValidatorsModule,
     CustomInputModule,
     RouterModule.forChild(routes),
-    NgxAwesomePopupModule.forRoot(),
-    ConfirmBoxConfigModule.forRoot(),
   ],
+  exports: [RouterModule],
   providers: [FuelCostService, ReportService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
