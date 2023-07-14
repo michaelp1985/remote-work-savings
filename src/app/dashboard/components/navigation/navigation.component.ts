@@ -45,7 +45,8 @@ export class NavigationComponent implements OnInit, AfterViewInit {
   }
 
   start() {
-    NavigationComponent.currentPage = 1;
+    let currentPage = this.getCurrentPageName();
+    NavigationComponent.currentPage = (currentPage === 'reports') ? 0 : 1;
     let nextPage = '/' + this.pageNaviagtion[NavigationComponent.currentPage];
     this.router.navigate([nextPage]);
   }
