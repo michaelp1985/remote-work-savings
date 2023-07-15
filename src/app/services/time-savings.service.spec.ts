@@ -59,6 +59,7 @@ describe('TimeSavingsService', () => {
         startDate: new Date(2019, 1, 1),
         endDate: new Date(2020, 1, 1),
         remoteWorkDaysPerWeek: 5,
+        holidayCountPerYear: 6,
       };
 
       const totalPossibleWorkingDays =
@@ -74,6 +75,7 @@ describe('TimeSavingsService', () => {
         startDate: new Date(2019, 1, 1),
         endDate: new Date(2020, 1, 1),
         remoteWorkDaysPerWeek: 3,
+        holidayCountPerYear: 6,
       };
 
       const totalRemoteWorkingDays =
@@ -91,6 +93,7 @@ describe('TimeSavingsService', () => {
         startDate: new Date(2020, 1, 1),
         endDate: new Date(2020, 12, 31),
         remoteWorkDaysPerWeek: 3,
+        holidayCountPerYear: 6,
       };
 
       // test commute data
@@ -101,6 +104,7 @@ describe('TimeSavingsService', () => {
         fuelType: 'gas',
         oilChangeCost: 50,
         transportationType: 'auto',
+        mpg: 25,
       };
 
       // test child care data using childcare model

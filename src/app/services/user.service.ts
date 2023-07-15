@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TimeData } from '../models/time.model';
 import { User } from '../models/user.model';
-import { AutoService } from './auto.service';
 import { FuelCostService } from './fuel-cost.service';
 import { TimeSavingsService } from './time-savings.service';
 
@@ -25,8 +24,7 @@ export class UserService {
     this.timeData = new TimeData();
   }
 
-  get user() {
-    console.log('caching user');
+  get user() {    
     return this.cachedUser;
   }
 
@@ -76,15 +74,6 @@ export class UserService {
       this.cachedUser.remoteWorkHistory
     );
   }
-
-  // getTotalTimeSavedInMinutes() {
-  //   return this.timeService.calculateTotalTimeSavingsToday(
-  //     this.cachedUser.commute,
-  //     this.cachedUser.remoteWorkHistory,
-  //     this.cachedUser.childCare,
-  //     this.cachedUser.misc
-  //   ).totalMinutesSaved;
-  // }
 
   populateTimeData() {
     this.timeData = this.timeService.calculateTotalTimeSavingsToday(
