@@ -15,6 +15,7 @@ describe('ReportService', () => {
       endDate: new Date(2020, 1, 1),
       startDate: new Date(2021, 1, 1),
       remoteWorkDaysPerWeek: 3,
+      holidayCountPerYear: 6,
     },
     commute: new Commute(),
     childCare: new ChildCare(),
@@ -29,6 +30,11 @@ describe('ReportService', () => {
       'getTotalCommuteTimeSaved',
       'getTotalMorningRoutineTimeSaved',
       'getTotalDaysWorkedRemote',
+      'populateTimeData',
+      'getTotalFoodBeverageCost',
+      'getTotalMiscSavings',
+      'getTotalFuelSavings',
+      'getTotalChildCareSavings',
     ],
     { user: u }
   );

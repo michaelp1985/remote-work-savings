@@ -1,12 +1,10 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { User } from '../models/user.model';
 import { FuelCostService } from './fuel-cost.service';
 import { UserService } from './user.service';
-import { Observable, of } from 'rxjs';
-import { State } from '../models/state.model';
-import { AutoType } from '../models/enumerations/auto-type';
-import { TransportationType } from '../models/enumerations/transportation-type';
+import { Observable } from 'rxjs';
+import { TimeSavingsService } from './time-savings.service';
+import { time } from 'console';
 
 describe('UserService', () => {
   let service: UserService;
@@ -16,6 +14,12 @@ describe('UserService', () => {
     'getFuelDataByFuelType',
     'fuelData$',
   ]);
+
+  const timeSavingsServiceSpy = jasmine.createSpyObj('TimeSavingsService', [
+    'getTotalRemoteWorkWeeks',
+    'getTotalRemoteWorkingDays'
+  ]);
+
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -28,6 +32,10 @@ describe('UserService', () => {
         {
           provide: FuelCostService,
           useValue: fuelCostServiceSpy,
+        },
+        {
+          provide: TimeSavingsService,
+          useValue: timeSavingsServiceSpy,
         },
       ],
     });
@@ -61,6 +69,7 @@ describe('UserService', () => {
           startDate: new Date(2020, 0, 1),
           endDate: new Date(2021, 0, 1),
           remoteWorkDaysPerWeek: 5,
+          holidayCountPerYear: 6,
         },
       };
 
@@ -86,13 +95,10 @@ describe('UserService', () => {
 
   describe('getTotalFoodBeverageCost', () => {
     it('should get total food and beverage cost', () => {
-      let user = new User();
-
-      user.misc.beverageCostPerWeek = 10;
-      user.misc.foodCostPerWeek = 10;
-      service.timeData.totalWeeksSaved = 5;
-
-      service.user = user;
+      
+      service.user.misc.beverageCostPerWeek = 10;
+      service.user.misc.foodCostPerWeek = 10;
+      service.timeData.totalWeeksSaved = 5;      
 
       const expectedCost = 100;
 
@@ -103,12 +109,11 @@ describe('UserService', () => {
   });
 
   describe('getTotalChildCareSavings', () => {
-    it('should get the total child care savings', () => {
-      let user = new User();
-      user.childCare.costPerWeek = 10.4567;
-      service.timeData.totalWeeksSaved = 5;
+    it('should get the total child care savings', () => {  
+      service.clearUserCache();    
+      service.user.childCare.costPerWeek = 10.4567;       
 
-      service.user = user;
+      timeSavingsServiceSpy.getTotalRemoteWorkWeeks.and.returnValue(5);
 
       const expectedCost = 52.28;
       const acutalCost = service.getTotalChildCareSavings();
@@ -118,10 +123,8 @@ describe('UserService', () => {
   });
 
   describe('getTotalMiscSavings', () => {
-    it('should get total misc savings', () => {
-      let user = new User();
-      user.misc.clothingCostPerYear = 100;
-      service.user = user;
+    it('should get total misc savings', () => {      
+      service.user.misc.clothingCostPerYear = 100;      
       service.timeData.totalWeeksSaved = 100;
 
       const expectedCost = 192.31;
@@ -132,51 +135,10 @@ describe('UserService', () => {
   });
 
   describe('getTotalDaysWorkedRemote', () => {
-    it('should get total number of remote working days for given time frame', () => {
-      let user = new User();
-
-      user.remoteWorkHistory = {
-        startDate: new Date(2020, 0, 1),
-        endDate: new Date(2021, 0, 1),
-        remoteWorkDaysPerWeek: 5,
-      };
-
-      service.user = user;
-
-      const actualRemoteWorkingDays = service.getTotalDaysWorkedRemote();
-      expect(actualRemoteWorkingDays).toBe(260);
-    });
-  });
-
-  describe('getTotalTimeSavedInMinutes', () => {
-    it('should get total time saved in minutes', () => {
-      let user = new User();
-
-      user.remoteWorkHistory = {
-        startDate: new Date(2020, 0, 1),
-        endDate: new Date(2021, 0, 1),
-        remoteWorkDaysPerWeek: 5,
-      };
-
-      user.commute = {
-        commuteMinutesPerDay: 30,
-        commuteDistancePerDay: 30,
-        autoType: AutoType.Car,
-        fuelType: 'Gasoline',
-        transportationType: TransportationType.personalMoto,
-        oilChangeCost: 40,
-      };
-
-      user.childCare = {
-        costPerWeek: 100,
-        commuteInMinutesPerDay: 30,
-        commuteInMilesPerDay: 20,
-      };
-
-      service.user = user;
-
-      const actualTimeSavedInMinutes = service.getTotalTimeSavedInMinutes();
-      expect(actualTimeSavedInMinutes).toBe(15600);
+    it('should get get the total remote working days from the time savings service', () => {      
+      
+      service.getTotalDaysWorkedRemote();
+      expect(timeSavingsServiceSpy.getTotalRemoteWorkingDays).toHaveBeenCalled();
     });
   });
 });
