@@ -7,15 +7,18 @@ import { UserCostSavingsReport } from '../models/reports/user-cost-savings-repor
 import { UserService } from './user.service';
 import { UserTimeSavingsReport } from '../models/reports/user-time-savings-report';
 import { DataFormatService } from './data-format.service';
+import { TransportationType } from '../models/enumerations/transportation-type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReportService {
   userSavingsReport: UserCostSavingsReport;
+  transportationTypeIsAuto = false;
 
   constructor(private readonly userService: UserService) {
     this.userSavingsReport = this.getUserCostSavingsReport();
+    this.transportationTypeIsAuto = userService.user.commute.transportationType == TransportationType.personalMoto;
   }
 
   getUserCostSavingsReport() {
@@ -26,6 +29,7 @@ export class ReportService {
       totalFuelSavings: this.userService.getTotalFuelSavings(),
       totalChildCareSavings: this.userService.getTotalChildCareSavings(),
       totalMoneySavings: 0,
+      totalMilesSaved: this.userService.getTotalCommuteMilesSaved(),
     };
 
     userSavingsReport.totalMoneySavings =

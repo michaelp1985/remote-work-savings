@@ -23,7 +23,10 @@
         {{totalTimeSavedReport.daysSaved}} <em style="font-size: 10px">Days</em> |
         {{totalTimeSavedReport.hoursSaved}} <em style="font-size: 10px">Hours</em> |
         {{totalTimeSavedReport.minutesSaved}} <em style="font-size: 10px">Minutes</em>        
-      </div>      
+      </div>  
+      <div class="report-summary-item" *ngIf="showMiles" >
+        Total Miles Saved: {{ userCostSavingsReport.totalMilesSaved }} <em style="font-size: 10px">Miles</em>
+      </div>  
     </mat-card-content>
   </mat-card>
 
@@ -116,9 +119,9 @@
     </h2>   
     <p>
       <strong>1.</strong> Share your report with your friends and family. <br>
-      <strong>2.</strong> Restart the process and play with the inputs to see how you can save even more money and time. <br>
+      <strong>2.</strong> Restart the process and play with the inputs to see how you can save even more time and money. <br>
       <strong>3.</strong> Join me on <a href="https://www.linkedin.com/in/michaelpetty-stl/">LinkedIn</a> to continue the conversation and follow me for updates. <br>
-      <strong>4.</strong> Check out our <a matLine [routerLink]="['/about']">About</a> page to learn more about the app and how it works. <br>
+      <strong>4.</strong> Check out the <a matLine [routerLink]="['/about']">About</a> page to learn more about the app and how it works. <br>
     </p>
   </mat-card-content>
 </mat-card>

@@ -24,7 +24,7 @@ export class UserService {
     this.timeData = new TimeData();
   }
 
-  get user() {    
+  get user() {
     return this.cachedUser;
   }
 
@@ -90,17 +90,31 @@ export class UserService {
       this.cachedUser.remoteWorkHistory
     ).totalMinutesSaved;
   }
+
   getTotalCommuteTimeSaved(): number {
     return this.timeService.calculateTotalTimeSavedByMinutes(
       this.cachedUser.commute.commuteMinutesPerDay,
       this.cachedUser.remoteWorkHistory
     ).totalMinutesSaved;
   }
+
   getTotalChildCareTimeSaved(): number {
     return this.timeService.calculateTotalTimeSavedByMinutes(
       this.cachedUser.childCare.commuteInMinutesPerDay,
       this.cachedUser.remoteWorkHistory
     ).totalMinutesSaved;
+  }
+
+  getTotalCommuteMilesSaved(): number {
+    let totalMilesSavedPerDay = Math.floor(
+      this.cachedUser.commute.commuteDistancePerDay * 2 +
+        this.cachedUser.childCare.commuteInMilesPerDay
+    );
+    let totalRemoteWorkingDays = this.timeService.getTotalRemoteWorkingDays(
+      this.cachedUser.remoteWorkHistory
+    );
+
+    return totalMilesSavedPerDay * totalRemoteWorkingDays;
   }
 
   getTotalFuelSavings() {
@@ -129,7 +143,9 @@ export class UserService {
   }
 
   private getFuelCostPerDay(fuelCost: number) {
-    let totalMiles = this.cachedUser.commute.commuteDistancePerDay * 2 + this.cachedUser.childCare.commuteInMilesPerDay;
+    let totalMiles =
+      this.cachedUser.commute.commuteDistancePerDay * 2 +
+      this.cachedUser.childCare.commuteInMilesPerDay;
 
     let gallonsUsedPerDay = totalMiles / this.user.commute.mpg;
     return fuelCost * gallonsUsedPerDay;
