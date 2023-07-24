@@ -38,12 +38,20 @@ export class TransportationComponent implements OnInit {
 
   distanceToWork: FormControl = new FormControl(
     this.userService.user.commute.commuteDistancePerDay,
-    [Validators.required, CustomValidatorsModule.minNumberValidator(1), CustomValidatorsModule.numericValidator()]
+    [
+      Validators.required,
+      CustomValidatorsModule.minNumberValidator(1),
+      CustomValidatorsModule.numericValidator(),
+    ]
   );
 
   publicCost: FormControl = new FormControl(
     this.userService.user.commute.publicTransportationCostPerDay,
-    [Validators.required, CustomValidatorsModule.minNumberValidator(0.01), CustomValidatorsModule.numericValidator()]
+    [
+      Validators.required,
+      CustomValidatorsModule.minNumberValidator(0.01),
+      CustomValidatorsModule.numericValidator(),
+    ]
   );
 
   transportationMode: FormControl = new FormControl(
@@ -53,7 +61,11 @@ export class TransportationComponent implements OnInit {
 
   timeToWork: FormControl = new FormControl(
     this.userService.user.commute.commuteMinutesPerDay,
-    [Validators.required, CustomValidatorsModule.minNumberValidator(1), CustomValidatorsModule.numericValidator()]
+    [
+      Validators.required,
+      CustomValidatorsModule.minNumberValidator(1),
+      CustomValidatorsModule.numericValidator(),
+    ]
   );
 
   milesPerGallon: FormControl = new FormControl(
@@ -154,6 +166,9 @@ export class TransportationComponent implements OnInit {
     this.userService.user.commute.publicTransportationCostPerDay = parseFloat(
       this.publicTransportationCost.replace('$', '')
     );
-    this.userService.populateFuelData();
+
+    if (this.selectedTransportation === TransportationType.personalMoto) {
+      this.userService.populateFuelData();
+    }
   }
 }
