@@ -44,6 +44,7 @@ describe('UserService', () => {
       'subscribe',
     ]);
     service = TestBed.inject(UserService);
+    service.clearUserCache();
   });
 
   describe('Verify Service', () => {
@@ -139,6 +140,29 @@ describe('UserService', () => {
       
       service.getTotalDaysWorkedRemote();
       expect(timeSavingsServiceSpy.getTotalRemoteWorkingDays).toHaveBeenCalled();
+    });
+  });
+
+  describe('getTotalCommuteMilesSaved', () => {
+    it('should get the total commute miles saved without child care miles', () => {
+      service.user.commute.commuteDistancePerDay = 10;
+      timeSavingsServiceSpy.getTotalRemoteWorkingDays.and.returnValue(5);
+
+      const expectedMiles = 100;
+      const actualMiles = service.getTotalCommuteMilesSaved();
+
+      expect(actualMiles).toBe(expectedMiles);
+    });
+
+    it('should get the total commute miles saved with child care miles', () => {
+      service.user.commute.commuteDistancePerDay = 10;
+      service.user.childCare.commuteInMilesPerDay = 10;
+      timeSavingsServiceSpy.getTotalRemoteWorkingDays.and.returnValue(5);
+
+      const expectedMiles = 150;
+      const actualMiles = service.getTotalCommuteMilesSaved();
+
+      expect(actualMiles).toBe(expectedMiles);
     });
   });
 });

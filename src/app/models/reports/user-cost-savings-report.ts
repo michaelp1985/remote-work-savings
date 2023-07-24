@@ -4,4 +4,5 @@ export interface UserCostSavingsReport {
   totalFoodBeverageSavings: number;
   totalMiscSavings: number;
   totalMoneySavings: number;
+  totalMilesSaved: number;
 }

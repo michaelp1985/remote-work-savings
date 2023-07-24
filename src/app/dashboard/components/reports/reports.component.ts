@@ -14,6 +14,7 @@ import { TotalTimeSavedReport } from 'src/app/models/reports/total-time-saved-re
 export class ReportsComponent implements AfterContentChecked {
   chartTitle = 'test';
   darkMode = false;
+  showMiles = false;
   userCostSavingsReport: UserCostSavingsReport;
   userTimeSavingsReport: UserTimeSavingsReport;
   totalTimeSavedReport: TotalTimeSavedReport;
@@ -45,7 +46,7 @@ export class ReportsComponent implements AfterContentChecked {
   xAxisLabel = 'Country';
   showYAxisLabel = true;
   yAxisLabel = 'Population';
-  screenWidth: number = 0;  
+  screenWidth: number = 0;
 
   view: [number, number] = [300, 300];
   pieChartColorScheme = {
@@ -62,10 +63,10 @@ export class ReportsComponent implements AfterContentChecked {
 
     this.costBreakdownReport.data =
       this.reportService.getUserCostSavingsBreakdownReport();
-    
+
     var minutes = this.userTimeSavingsReport.totalTimeSaved % 60;
     var hours = Math.floor(this.userTimeSavingsReport.totalTimeSaved / 60) % 24;
-    var days = Math.floor((this.userTimeSavingsReport.totalTimeSaved / 60) / 24);
+    var days = Math.floor(this.userTimeSavingsReport.totalTimeSaved / 60 / 24);
 
     this.totalTimeSavedReport = {
       minutesSaved: minutes,
@@ -74,6 +75,7 @@ export class ReportsComponent implements AfterContentChecked {
     };
 
     this.screenWidth = Math.min(window.innerWidth * 0.9, 350);
+    this.showMiles = reportService.transportationTypeIsAuto;
   }
 
   ngAfterContentChecked(): void {
@@ -81,7 +83,6 @@ export class ReportsComponent implements AfterContentChecked {
   }
 
   async setShareImage() {
-
     const totalCostSavingsReport = document.getElementById(
       'totalCostSavingsReport'
     );
@@ -94,10 +95,12 @@ export class ReportsComponent implements AfterContentChecked {
 
     const costImage1 = costReport.toDataURL('costshare/png');
 
-    let shareButtons = document.querySelector(".sharethis-sticky-share-buttons");
+    let shareButtons = document.querySelector(
+      '.sharethis-sticky-share-buttons'
+    );
 
     if (shareButtons) {
-      shareButtons.setAttribute("data-image", costImage1)
+      shareButtons.setAttribute('data-image', costImage1);
     }
   }
 
@@ -156,7 +159,7 @@ export class ReportsComponent implements AfterContentChecked {
 
       doc.setFillColor(0, 170, 255);
       doc.rect(0, 0, doc.internal.pageSize.width, 80, 'F');
-      
+
       doc.setFontSize(40);
       doc.setTextColor(255, 255, 255);
       doc.text('Savings Report', doc.internal.pageSize.width / 2, 50, {

@@ -6,6 +6,7 @@ import { Commute } from '../models/commute.model';
 import { ChildCare } from '../models/child-care';
 import { Misc } from '../models/misc';
 import { State } from '../models/state.model';
+import { TransportationType } from '../models/enumerations/transportation-type';
 
 describe('ReportService', () => {
   let service: ReportService;
@@ -23,6 +24,8 @@ describe('ReportService', () => {
     state: new State(),
   };
 
+  u.commute.transportationType = TransportationType.public;
+
   const userServiceSpy = jasmine.createSpyObj(
     'UserService',
     [
@@ -35,6 +38,7 @@ describe('ReportService', () => {
       'getTotalMiscSavings',
       'getTotalFuelSavings',
       'getTotalChildCareSavings',
+      'getTotalCommuteMilesSaved',
     ],
     { user: u }
   );
@@ -60,6 +64,10 @@ describe('ReportService', () => {
   describe('Verify Service', () => {
     it('Report service should be defined', () => {
       expect(service).toBeTruthy();
+    });
+
+    it('Should have a public transportation type', () => {
+      expect(service.transportationTypeIsAuto).toBeFalse();
     });
   });
 
