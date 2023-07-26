@@ -28,11 +28,19 @@ export class ReportsComponent implements AfterContentChecked {
     data: [],
   };
   timeBreakdownReport: any = {
-    title: 'Time Breakdown',
+    title: 'Time Savings by Time Period',
     data: [],
   };
   costBreakdownReport: any = {
-    title: 'Cost Breakdown',
+    title: 'Cost Savings by Time Period',
+    data: [],
+  };
+  milesBreakdownReport: any = {
+    title: 'Miles Saved by Time Period',
+    data: [],
+  };
+  fuelBreakdownReport: any = {
+    title: 'Fuel Saved by Time Period',
     data: [],
   };
 
@@ -58,11 +66,18 @@ export class ReportsComponent implements AfterContentChecked {
     this.userTimeSavingsReport = this.reportService.getUserTimeSavingsReport();
     this.costReport.data = this.reportService.getUserCostSavingsReports();
     this.timeReport.data = this.reportService.getUserTimeSavingsReports();
+
     this.timeBreakdownReport.data =
       this.reportService.getUserTimeSavingsBreakdownReport();
 
     this.costBreakdownReport.data =
       this.reportService.getUserCostSavingsBreakdownReport();
+
+    this.milesBreakdownReport.data =
+      this.reportService.getMilesSavingsBreakdownReport();
+
+    this.fuelBreakdownReport.data =
+      this.reportService.getFuelSavingsBreakdownReport();
 
     var minutes = this.userTimeSavingsReport.totalTimeSaved % 60;
     var hours = Math.floor(this.userTimeSavingsReport.totalTimeSaved / 60) % 24;
@@ -117,6 +132,12 @@ export class ReportsComponent implements AfterContentChecked {
     const timeSavingsBreakdownReport = document.getElementById(
       'timeSavingsBreakdownReport'
     );
+    const fuelSavingsBreakdownReport = document.getElementById(
+      'fuelSavingsBreakdownReport'
+    );
+    const milesSavingsBreakdownReport = document.getElementById(
+      'mileSavingsBreakdownReport'
+    );
 
     if (
       totalCostSavingsReport &&
@@ -145,6 +166,24 @@ export class ReportsComponent implements AfterContentChecked {
         { scale: 2 }
       );
       const timeImage2 = timeBreakdownReport.toDataURL('time2/png');
+
+      let fuelImage = null;
+      if (fuelSavingsBreakdownReport) {
+        const fuelBreakdownReport = await html2canvas(
+          fuelSavingsBreakdownReport,
+          { scale: 2 }
+        );
+        fuelImage = fuelBreakdownReport.toDataURL('fuel2/png');
+      }
+
+      let milesImage = null;
+      if (milesSavingsBreakdownReport) {
+        const milesBreakdownReport = await html2canvas(
+          milesSavingsBreakdownReport,
+          { scale: 2 }
+        );
+        milesImage = milesBreakdownReport.toDataURL('miles2/png');
+      }
 
       const doc = new jsPDF({
         orientation: 'portrait',
@@ -175,37 +214,106 @@ export class ReportsComponent implements AfterContentChecked {
           10,
           100
         );
-        doc.addImage(costImage1, 'PNG', 20, 110, 200, 200);
-        doc.addImage(timeImage1, 'PNG', 240, 110, 200, 200);
+        if (fuelImage && milesImage) {
+          doc.text(
+            `You've driven ${this.userCostSavingsReport.totalMilesSaved} less miles and burned ${this.userCostSavingsReport.totalFuelSaved} less gallons of fuel!`,
+            10,
+            120
+          );
+        }
+        doc.addImage(costImage1, 'PNG', 20, 130, 200, 200);
+        doc.addImage(timeImage1, 'PNG', 240, 130, 200, 200);
 
         doc.text(
           'Cost savings breakdown by amount of money saved per day, week, month, and year.',
           10,
-          350
+          370
         );
-        doc.addImage(costImage2, 'PNG', 20, 360, 200, 200);
+        doc.addImage(costImage2, 'PNG', 20, 380, 200, 200);
 
         doc.text(
           'Times savings breakdown by time period of time saved per day, week, month, and year.',
           10,
-          610
+          630
         );
-        doc.addImage(timeImage2, 'PNG', 20, 620, 200, 200);
-      } else {
-        doc.text(
-          `You've saved a total of $${this.userCostSavingsReport.totalMoneySavings} dollars`,
-          10,
-          100
-        );
-        doc.addImage(costImage1, 'PNG', 20, 120, 200, 200);
+        doc.addImage(timeImage2, 'PNG', 20, 640, 200, 200);
 
+        if (fuelImage) {
+          doc.text(
+            'Fuel savings breakdown by amount of fuel saved per day, week, month, and year.',
+            10,
+            880
+          );
+          doc.addImage(fuelImage, 'PNG', 20, 890, 200, 200);
+        }
+
+        if (milesImage) {
+          doc.text(
+            'Miles savings breakdown by amount of miles saved per day, week, month, and year.',
+            10,
+            1140
+          );
+          doc.addImage(milesImage, 'PNG', 20, 1150, 200, 200);
+        }
+      } else {
+        let x = 100;
         doc.text(
-          `You've saved a total of ${this.userTimeSavingsReport.totalTimeSaved} minutes on your remote work journey!`,
+          "Wow! Look at what you've managed to accomplish by working remote!",
           10,
-          360,
+          x,
           { maxWidth: 300 }
         );
-        doc.addImage(timeImage1, 'PNG', 20, 390, 200, 200);
+
+        x += 40;
+        doc.text("So far, you've managed to:", 10, x, { maxWidth: 300 });
+
+        x += 20;
+        doc.text(
+          `Save a total of ${this.userCostSavingsReport.totalMoneySavings} dollars!`,
+          10,
+          x,
+          { maxWidth: 300 }
+        );
+
+        x += 20;
+        doc.text(
+          `Save a total of ${this.userTimeSavingsReport.totalTimeSaved} minutes!`,
+          10,
+          x,
+          { maxWidth: 300 }
+        );
+
+        if (milesImage && fuelImage) {
+          x += 20;
+          doc.text(
+            `Drive ${this.userCostSavingsReport.totalMilesSaved} less miles!`,
+            10,
+            x,
+            { maxWidth: 300 }
+          );
+
+          x += 20;
+          doc.text(
+            `Burn ${this.userCostSavingsReport.totalFuelSaved} less gallons of fuel!`,
+            10,
+            x,
+            { maxWidth: 300 }
+          );
+        }
+
+        x += 40;
+        doc.text(
+          'Here are some usefull charts to help you visualize your savings!',
+          10,
+          x,
+          { maxWidth: 300 }
+        );
+
+        x += 20;
+        doc.addImage(costImage1, 'PNG', 20, x, 200, 200);
+
+        x += 220;
+        doc.addImage(timeImage1, 'PNG', 20, x, 200, 200);
 
         doc.addPage();
 
@@ -224,9 +332,29 @@ export class ReportsComponent implements AfterContentChecked {
           { maxWidth: 300 }
         );
         doc.addImage(timeImage2, 'PNG', 20, 320, 200, 200);
+
+        if (fuelImage && milesImage) {
+          doc.addPage();
+
+          doc.text(
+            'Fuel savings breakdown by amount of fuel saved per day, week, month, and year.',
+            10,
+            20,
+            { maxWidth: 300 }
+          );
+          doc.addImage(fuelImage, 'PNG', 20, 50, 200, 200);
+
+          doc.text(
+            'Miles savings breakdown by amount of miles saved per day, week, month, and year.',
+            10,
+            290,
+            { maxWidth: 300 }
+          );
+          doc.addImage(milesImage, 'PNG', 20, 320, 200, 200);
+        }
       }
 
-      doc.save('my-document.pdf');
+      doc.save('remote-work-savings-report.pdf');
     } else {
       console.log('No data');
     }

@@ -39,6 +39,7 @@
     mat-card-title {
       text-align: center;
       padding-bottom: 10px;
+      font-size: large;
     }
 
     mat-card-header {
@@ -65,7 +66,7 @@
       .th,
       td {
         padding: 5px;
-        text-align: left;
+        text-align: left;        
       }
 
       th {

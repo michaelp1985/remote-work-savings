@@ -121,7 +121,13 @@ export class TransportationComponent implements OnInit {
     }
   }
 
-  getDefaultMpg(autoType: AutoType) {
+  getDefaultMpg() {    
+    return this.fuelService.getDefaultMpgByAutoType(
+      <AutoType>this.selectedAuto
+    );
+  }
+
+  setUsersDefaultMpg(autoType: AutoType) {
     this.usersMpg = this.fuelService.getDefaultMpgByAutoType(autoType);
   }
 
