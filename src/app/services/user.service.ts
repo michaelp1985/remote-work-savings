@@ -117,6 +117,15 @@ export class UserService {
     return totalMilesSavedPerDay * totalRemoteWorkingDays;
   }
 
+  getTotalFuelSaved(): number {
+    const totalCommuteMilesSaved = this.getTotalCommuteMilesSaved();
+
+    return (
+      Math.round((totalCommuteMilesSaved / this.cachedUser.commute.mpg) * 100) /
+      100
+    );
+  }
+
   getTotalFuelSavings() {
     let fuelData = this.fuelService.getFuelDataByFuelType(
       this.cachedUser.commute.fuelType ?? ''

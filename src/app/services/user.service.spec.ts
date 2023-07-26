@@ -165,4 +165,18 @@ describe('UserService', () => {
       expect(actualMiles).toBe(expectedMiles);
     });
   });
+
+  describe('getTotalFuelSaved', () => {
+    it('should get the total fuel saved', () => {
+      service.user.commute.commuteDistancePerDay = 12;
+      service.user.childCare.commuteInMilesPerDay = 10;
+      service.user.commute.mpg = 25;
+      timeSavingsServiceSpy.getTotalRemoteWorkingDays.and.returnValue(5);
+
+      const expectedFuelSaved = 6.8;
+      const actualFuelSaved = service.getTotalFuelSaved();
+
+      expect(actualFuelSaved).toBe(expectedFuelSaved);
+    });
+  });
 });

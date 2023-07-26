@@ -18,7 +18,9 @@ export class ReportService {
 
   constructor(private readonly userService: UserService) {
     this.userSavingsReport = this.getUserCostSavingsReport();
-    this.transportationTypeIsAuto = userService.user.commute.transportationType == TransportationType.personalMoto;
+    this.transportationTypeIsAuto =
+      userService.user.commute.transportationType ==
+      TransportationType.personalMoto;
   }
 
   getUserCostSavingsReport() {
@@ -30,6 +32,7 @@ export class ReportService {
       totalChildCareSavings: this.userService.getTotalChildCareSavings(),
       totalMoneySavings: 0,
       totalMilesSaved: this.userService.getTotalCommuteMilesSaved(),
+      totalFuelSaved: this.userService.getTotalFuelSaved(),
     };
 
     userSavingsReport.totalMoneySavings =
@@ -38,10 +41,12 @@ export class ReportService {
       userSavingsReport.totalFoodBeverageSavings +
       userSavingsReport.totalMiscSavings;
 
-    // round total money savings to 2 decimal places using math.round
-    userSavingsReport.totalMoneySavings = Math.round(
-      userSavingsReport.totalMoneySavings * 100
-    ) / 100;
+    userSavingsReport.totalMoneySavings =
+      Math.round(userSavingsReport.totalMoneySavings * 100) / 100;
+
+    if (isNaN(userSavingsReport.totalFuelSaved)) {
+      userSavingsReport.totalFuelSaved = 0;
+    }
 
     this.userSavingsReport = userSavingsReport;
 
@@ -205,5 +210,65 @@ export class ReportService {
     ];
 
     return costSavingsBreakdown;
+  }
+
+  getFuelSavingsBreakdownReport() {
+    const user = this.userService.user;
+    const totalRemoteWorkDays = this.userService.getTotalDaysWorkedRemote();
+
+    const gallonsUsedPerDay = this.userSavingsReport.totalFuelSaved / totalRemoteWorkDays;
+    const weeksInMonth = 4.33;
+    const weeksInYear = 52;
+
+    const fuelSavingsBreakdown: any[] = [
+      {
+        name: 'Per Day',
+        value: Math.round((gallonsUsedPerDay) * 100) / 100,
+      },
+      {
+        name: 'Per Week',
+        value: Math.round((gallonsUsedPerDay * user.remoteWorkHistory.remoteWorkDaysPerWeek) * 100) / 100,
+      },
+      {
+        name: 'Per Month',
+        value: Math.round((gallonsUsedPerDay * (user.remoteWorkHistory.remoteWorkDaysPerWeek * weeksInMonth)) * 100) / 100,
+      },
+      {
+        name: 'Per Year',
+        value: Math.round((gallonsUsedPerDay * (user.remoteWorkHistory.remoteWorkDaysPerWeek * weeksInYear)) * 100) / 100,
+      },
+    ];
+
+    return fuelSavingsBreakdown;    
+  }
+
+  getMilesSavingsBreakdownReport() {
+    const user = this.userService.user;
+    const totalRemoteWorkDays = this.userService.getTotalDaysWorkedRemote();
+
+    const milesSavedPerDay = this.userSavingsReport.totalMilesSaved / totalRemoteWorkDays;
+    const weeksInMonth = 4.33;
+    const weeksInYear = 52;
+
+    const milesSavingsBreakdown: any[] = [
+      {
+        name: 'Per Day',
+        value: Math.round((milesSavedPerDay) * 100) / 100,
+      },
+      {
+        name: 'Per Week',
+        value: Math.round((milesSavedPerDay * user.remoteWorkHistory.remoteWorkDaysPerWeek) * 100) / 100,
+      },
+      {
+        name: 'Per Month',
+        value: Math.round((milesSavedPerDay * (user.remoteWorkHistory.remoteWorkDaysPerWeek * weeksInMonth)) * 100) / 100,
+      },
+      {
+        name: 'Per Year',
+        value: Math.round((milesSavedPerDay * (user.remoteWorkHistory.remoteWorkDaysPerWeek * weeksInYear)) * 100) / 100,
+      },
+    ];
+
+    return milesSavingsBreakdown;    
   }
 }

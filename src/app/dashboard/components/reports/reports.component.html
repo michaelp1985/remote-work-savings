@@ -27,6 +27,9 @@
       <div class="report-summary-item" *ngIf="showMiles" >
         Total Miles Saved: {{ userCostSavingsReport.totalMilesSaved }} <em style="font-size: 10px">Miles</em>
       </div>  
+      <div class="report-summary-item" *ngIf="showMiles" >
+        Total Fuel Saved: {{ userCostSavingsReport.totalFuelSaved }} <em style="font-size: 10px">Gallons</em>        
+      </div>
     </mat-card-content>
   </mat-card>
 
@@ -108,6 +111,54 @@
           </table>    
       </mat-card-content>
     </mat-card>
+
+    <div *ngIf="showMiles">
+      <mat-card id="mileSavingsBreakdownReport">
+        <mat-card-title>
+          {{ milesBreakdownReport.title }}
+        </mat-card-title>
+        <mat-card-content>
+          <table mat-table class="report-table" [dataSource]="milesBreakdownReport.data">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Time Period</th>
+              <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="value">
+              <th mat-header-cell *matHeaderCellDef>Miles</th>
+              <td mat-cell *matCellDef="let element">{{ element.value }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"
+              [ngClass]="i % 2 === 0 ? 'even-row' : 'odd-row'">
+            </tr>
+          </table>         
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div *ngIf="showMiles">
+      <mat-card id="fuelSavingsBreakdownReport">
+        <mat-card-title>
+          {{ fuelBreakdownReport.title }}
+        </mat-card-title>
+        <mat-card-content>
+          <table mat-table class="report-table" [dataSource]="fuelBreakdownReport.data">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Time Period</th>
+              <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            </ng-container>
+            <ng-container matColumnDef="value">
+              <th mat-header-cell *matHeaderCellDef>Gallons</th>
+              <td mat-cell *matCellDef="let element">{{ element.value }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"
+              [ngClass]="i % 2 === 0 ? 'even-row' : 'odd-row'">
+            </tr>
+          </table>         
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </div>
 

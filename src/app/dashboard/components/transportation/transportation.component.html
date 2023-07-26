@@ -25,7 +25,7 @@
         <mat-form-field appearance="fill">
           <mat-hint>What kind of car do you drive?</mat-hint>      
           <mat-label>Auto Type</mat-label>
-          <mat-select [(ngModel)]="selectedAuto" (valueChange)="getDefaultMpg($event)" formControlName="autoType">
+          <mat-select [(ngModel)]="selectedAuto" (valueChange)="setUsersDefaultMpg($event)" formControlName="autoType">
             <mat-select-trigger>{{selectedAuto}}</mat-select-trigger>          
             <mat-option *ngFor="let type of autoTypes" [value]="type">
               {{type}}
@@ -46,7 +46,7 @@
 
         <div *ngIf="selectedFuel && selectedAuto">      
           <p>
-            Based on your Vehical Type, the average fuel consumption is {{usersMpg}} mpg. 
+            Based on your Vehical Type, the average fuel consumption is {{getDefaultMpg()}} mpg. 
             If you know the actual MPG of your vehical, you can change it below. 
             Otherwise, leave the default average value provided.
           </p>
